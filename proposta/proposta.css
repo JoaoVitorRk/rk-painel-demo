@@ -236,7 +236,7 @@ h1 em, h2 em { font-style: normal; background: linear-gradient(100deg, #EFE3C8 0
 
 /* ---------- a proposta (folha) ---------- */
 .proposta { padding: calc(var(--respiro) * 0.8) 0 var(--respiro); }
-.folha { position: relative; background: var(--branco); color: var(--tinta); padding: clamp(32px, 5vw, 64px) clamp(22px, 5vw, 72px); border: 1px solid rgba(42, 33, 28, 0.12); box-shadow: 0 40px 90px rgba(0, 0, 0, 0.35); display: grid; gap: 32px; }
+.folha { position: relative; background: var(--branco); color: var(--tinta); padding: clamp(32px, 5vw, 64px) clamp(22px, 5vw, 72px); border: 1px solid rgba(42, 33, 28, 0.12); box-shadow: 0 40px 90px rgba(0, 0, 0, 0.35); display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px; }   /* minmax(0, 1fr): um filho largo (botão sem quebra) não alarga a coluna além do respiro */
 .folha::before, .folha::after { content: ""; position: absolute; width: 26px; height: 26px; border: 1px solid var(--dourado); pointer-events: none; }
 .folha::before { left: 12px; top: 12px; border-right: 0; border-bottom: 0; }
 .folha::after { right: 12px; bottom: 12px; border-left: 0; border-top: 0; }
@@ -295,7 +295,7 @@ h1 em, h2 em { font-style: normal; background: linear-gradient(100deg, #EFE3C8 0
 .validade { font-size: 13px; letter-spacing: 0.04em; color: var(--tinta3); }
 .validade.expirou { color: var(--erro); }
 .folha .acoes { padding-top: 6px; }
-@media (max-width: 760px) { .detalhes { grid-template-columns: 1fr; } .opcao { padding: 28px 20px 24px; } .opcao .selo { left: 20px; } .folha .acoes .btn { width: 100%; } }
+@media (max-width: 760px) { .detalhes { grid-template-columns: 1fr; } .opcao { padding: 28px 20px 24px; } .opcao .selo { left: 20px; } .folha .acoes .btn { width: 100%; white-space: normal; text-align: center; line-height: 1.45; padding: 14px 18px; } }
 
 /* ---------- sob medida (modelo) ---------- */
 .sob { padding: var(--respiro) 0; }
