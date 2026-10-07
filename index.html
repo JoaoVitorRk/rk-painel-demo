@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <!-- ============================================================
-     PAINEL DE PROPOSTAS PARA MÚSICOS — base RK Performance
+     PAINEL DE PROPOSTAS PARA PRESTADORES DE SERVIÇO — base RK Performance
      Agenda · Propostas · Clientes. 3 perguntas → salvar → link pronto para mandar no WhatsApp.
      "Fechou?" marca a proposta como fechada (com o valor e os adicionais) e alimenta o faturamento.
      O resto (textos das opções, adicionais, pagamento…) vem da proposta padrão, em "Mais opções".
@@ -14,14 +14,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Painel de propostas · RK Performance</title>
-<meta name="description" content="Propostas, agenda e faturamento do músico num lugar só. Entre como visitante e mexa à vontade.">
+<meta name="description" content="Propostas, agenda e faturamento do seu negócio num lugar só. Entre como visitante e mexa à vontade.">
 <meta name="robots" content="noindex, nofollow">
 <meta name="format-detection" content="telephone=no">
-<meta name="theme-color" content="#0A0A0A">
+<meta name="theme-color" content="#16120F">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="RK Performance">
 <meta property="og:title" content="Painel de propostas · RK Performance">
-<meta property="og:description" content="Propostas, agenda e faturamento do músico num lugar só. Entre como visitante e conheça.">
+<meta property="og:description" content="Propostas, agenda e faturamento do seu negócio num lugar só. Entre como visitante e conheça.">
 <meta property="og:url" content="https://painel.rkperformance.com.br/">
 <meta property="og:image" content="https://painel.rkperformance.com.br/media/og-painel.jpg">
 <meta property="og:image:width" content="1200">
@@ -31,427 +31,8 @@
 <link rel="apple-touch-icon" href="media/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap">
-<style>
-  :root {
-    /* padrão RK (DESIGN.md + site da RK): preto e grafite, off-white e bege no texto, dourado só como detalhe */
-    --preto: #0A0A0A; --grafite: #1A1A1A; --grafite2: #2A2A2A; --grafite3: #3A3A3A;
-    --off: #F5F0E8; --bege: #D9CBB8; --dourado: #C9A96A; --dourado2: #E0C68A;
-    /* cores de estado (só para estado): verde = fechado, âmbar = atenção, vermelho = erro ou perigo */
-    --verde: #4CAF87; --ambar: #D9A94A; --vermelho: #D96A5A;
-    --verde-txt: #7CCBA9; --ambar-txt: #E6BE6E; --vermelho-txt: #EE9B8D;   /* versões claras para texto pequeno */
-    --campo: #111111; --folha: #151515;
-    --suave: rgba(217, 203, 184, 0.8);
-    --linha: rgba(217, 203, 184, 0.13); --linha-campo: rgba(217, 203, 184, 0.22); --linha-ouro: rgba(201, 169, 106, 0.45);
-    --sombra: 0 18px 40px -28px rgba(0, 0, 0, 0.9);
-    --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
-    --sans: "Schibsted Grotesk", "Segoe UI", system-ui, sans-serif;
-    --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
-    --faixa-h: 0px;   /* altura da faixa do modo visitante (medida no script) */
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { -webkit-text-size-adjust: 100%; }
-  body { background: var(--preto); color: var(--off); font-family: var(--sans); font-weight: 400; font-size: 16px; line-height: 1.5; -webkit-font-smoothing: antialiased; min-height: 100svh; overflow-x: hidden; }
-  @supports (overflow: clip) { html, body { overflow-x: clip; } }   /* a página nunca anda para o lado */
-  body.travado { overflow: hidden; }
-  body::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(ellipse 70% 44% at 92% -8%, rgba(201, 169, 106, 0.13), transparent 70%), radial-gradient(ellipse 60% 40% at -6% 108%, rgba(201, 169, 106, 0.06), transparent 70%), var(--preto); }
-  body::after { content: ""; position: fixed; inset: 0; z-index: 60; pointer-events: none; opacity: 0.07; mix-blend-mode: soft-light; background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
-  [hidden] { display: none !important; }
-  body:not(.visitante) .so-visitante { display: none !important; }
-  a { color: inherit; }
-  img { display: block; max-width: 100%; height: auto; }
-  button, input, textarea { font: inherit; color: inherit; }
-  button { -webkit-tap-highlight-color: transparent; }
-  p { text-wrap: pretty; }
-  :focus-visible { outline: 2px solid var(--dourado2); outline-offset: 2px; }
-  .tela { max-width: 660px; margin: 0 auto; padding: 0 18px calc(44px + env(safe-area-inset-bottom)); }
-  .tela.com-barra { padding-bottom: calc(120px + env(safe-area-inset-bottom)); }
-
-  /* ---------- logo em texto (igual ao site da RK) ---------- */
-  .logo { display: inline-flex; align-items: center; gap: 10px; font-family: var(--display); font-weight: 800; line-height: 1; white-space: nowrap; text-decoration: none; }
-  .logo .rk { color: var(--dourado); font-size: 20px; letter-spacing: -0.01em; }
-  .logo .sep { width: 1px; height: 22px; background: var(--dourado); flex: none; }
-  .logo .perf { font-size: 10.5px; font-weight: 600; letter-spacing: 0.26em; color: var(--bege); }
-  .logo.grande { gap: 16px; }
-  .logo.grande .rk { font-size: 46px; letter-spacing: -0.02em; }
-  .logo.grande .sep { height: 46px; }
-  .logo.grande .perf { font-size: 15px; letter-spacing: 0.32em; }
-
-  /* ---------- botões ---------- */
-  .b { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 10px 20px; border-radius: 8px; border: 1px solid rgba(217, 203, 184, 0.28); background: none; cursor: pointer; text-decoration: none; font-size: 0.95rem; font-weight: 600; line-height: 1.2; white-space: nowrap; transition: background-color 200ms, border-color 200ms, color 200ms, opacity 200ms; }
-  .b:hover { border-color: var(--dourado); }
-  .b-ouro { background: var(--dourado); border-color: var(--dourado); color: var(--preto); font-weight: 700; }
-  .b-ouro:hover { background: var(--dourado2); border-color: var(--dourado2); }
-  .b-contorno { border-color: var(--dourado); color: var(--dourado2); }
-  .b-contorno:hover { background: rgba(201, 169, 106, 0.12); }
-  .b-verde { background: rgba(76, 175, 135, 0.14); border-color: rgba(76, 175, 135, 0.62); color: var(--verde-txt); font-weight: 700; }
-  .b-verde:hover { background: rgba(76, 175, 135, 0.24); border-color: var(--verde); }
-  .b-cheio { width: 100%; min-height: 56px; font-size: 1.02rem; }
-  .b-pq { min-height: 46px; padding: 8px 14px; font-size: 0.9rem; }
-  .b:disabled { opacity: 0.5; cursor: default; }
-  .texto-link { min-height: 44px; background: none; border: 0; color: var(--dourado2); text-decoration: underline; text-decoration-color: rgba(224, 198, 138, 0.5); text-underline-offset: 4px; cursor: pointer; font-size: 0.95rem; padding: 8px 6px; }
-  .texto-link:hover { text-decoration-color: var(--dourado2); }
-  .perigo { color: var(--vermelho-txt); border-color: rgba(217, 106, 90, 0.5); }
-  .perigo:hover { border-color: var(--vermelho); }
-
-  /* ---------- login ---------- */
-  .login { min-height: 100svh; display: grid; place-items: center; padding: 34px 22px calc(34px + env(safe-area-inset-bottom)); }
-  .login form { width: min(100%, 380px); display: grid; gap: 16px; }
-  .login .marca { justify-self: center; margin-bottom: 26px; }
-  .login h1 { font-family: var(--display); font-weight: 800; font-size: clamp(2.1rem, 9.4vw, 2.6rem); line-height: 1.04; letter-spacing: -0.03em; text-align: center; text-wrap: balance; }
-  .login h1::after { content: ""; display: block; width: 44px; height: 2px; margin: 16px auto 0; background: var(--dourado); }
-  .login .lead { text-align: center; color: var(--suave); margin: -2px 0 10px; text-wrap: balance; }
-  .login .nota-cores { text-align: center; font-size: 0.86rem; line-height: 1.45; color: var(--suave); margin: -4px auto 14px; max-width: 34ch; text-wrap: balance; }
-  .senha-caixa { position: relative; }
-  .senha-caixa input { padding-right: 98px; }
-  .senha-caixa button { position: absolute; right: 4px; top: 4px; bottom: 4px; min-width: 88px; border: 0; background: none; border-radius: 8px; color: var(--dourado2); font-size: 0.88rem; font-weight: 500; cursor: pointer; }
-  .convite { margin-top: 12px; padding: 18px 16px 16px; border-radius: 12px; border: 1px solid var(--linha-ouro); background: rgba(201, 169, 106, 0.07); display: grid; gap: 12px; text-align: center; }
-  .convite p { font-size: 1.04rem; color: var(--off); }
-  .convite p b { color: var(--dourado2); font-weight: 700; }
-  .convite small { color: var(--suave); font-size: 0.84rem; line-height: 1.4; text-wrap: balance; }
-
-  /* ---------- faixa do modo visitante ---------- */
-  .faixa-visitante { position: sticky; top: 0; z-index: 35; display: flex; align-items: center; justify-content: center; gap: 4px 14px; padding: env(safe-area-inset-top) max(14px, env(safe-area-inset-right)) 0 max(16px, env(safe-area-inset-left)); background: rgba(14, 14, 14, 0.94); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-bottom: 1px solid var(--linha-ouro); }
-  .faixa-visitante p { min-width: 0; padding: 6px 0; font-size: 0.82rem; line-height: 1.35; color: var(--bege); }
-  .faixa-visitante p b { color: var(--dourado2); font-weight: 600; }
-  .faixa-visitante .texto-link { flex: none; font-size: 0.86rem; font-weight: 600; padding: 6px 4px; }
-  @media (max-width: 600px) { .faixa-visitante { justify-content: space-between; } }
-
-  /* ---------- topo ---------- */
-  .topo { position: sticky; top: var(--faixa-h); z-index: 20; display: flex; align-items: center; gap: 8px; padding: calc(12px + env(safe-area-inset-top)) 0 14px; }
-  /* o fundo do topo vai de ponta a ponta da tela (sem "caixa" escura no meio do brilho do fundo) */
-  .topo::before { content: ""; position: absolute; z-index: -1; top: 0; bottom: 0; left: calc(50% - 50vw); right: calc(50% - 50vw); background: linear-gradient(rgba(10, 10, 10, 0.97) 76%, rgba(10, 10, 10, 0)); pointer-events: none; }
-  body.visitante .topo { padding-top: 12px; }   /* o recuo do entalhe do iPhone já está na faixa */
-  .topo .espaco { flex: 1; }
-  .topo .b-pq { padding-inline: 12px; }
-  @media (max-width: 419px) {   /* celular: logo e botões do topo menores para caber "Como funciona" + "Sair" */
-    .topo { gap: 6px; }
-    .topo .logo { gap: 8px; } .topo .logo .rk { font-size: 18px; } .topo .logo .sep { height: 20px; } .topo .logo .perf { font-size: 9.5px; letter-spacing: 0.2em; }
-    .topo .b-pq { font-size: 0.86rem; padding-inline: 10px; }
-  }
-  @media (max-width: 359px) { .topo .logo .perf, .topo .logo .sep { display: none; } }
-  h2.titulo { font-family: var(--display); font-weight: 800; font-size: clamp(2rem, 8.8vw, 2.6rem); line-height: 1.05; letter-spacing: -0.03em; margin: 8px 0 18px; overflow-wrap: break-word; text-wrap: balance; }
-  h2.titulo::after { content: ""; display: block; width: 44px; height: 2px; margin-top: 14px; background: var(--dourado); }
-  .sub-titulo { color: var(--suave); margin: -6px 0 18px; }
-
-  /* ---------- dicas do visitante e frase de adaptação ---------- */
-  .dica-visitante { position: relative; display: grid; gap: 4px; margin: 0 0 16px; padding: 12px 50px 13px 14px; border-radius: 12px; border: 1px solid rgba(201, 169, 106, 0.32); background: rgba(201, 169, 106, 0.07); color: var(--bege); font-size: 0.92rem; line-height: 1.45; }
-  .dica-visitante::before { content: "Dica"; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--dourado); }
-  .dica-fechar { position: absolute; top: 2px; right: 2px; width: 44px; height: 44px; display: grid; place-items: center; border: 0; border-radius: 10px; background: none; color: var(--suave); font-size: 1.45rem; line-height: 1; cursor: pointer; }
-  .dica-fechar:hover { color: var(--off); }
-  body.com-dica-modelo .sub-titulo { display: none; }   /* a dica da proposta padrão já diz o mesmo */
-  .adapta { padding: 1px 0 1px 12px; border-left: 2px solid var(--dourado); color: var(--bege); font-size: 0.88rem; line-height: 1.45; }
-
-  /* ---------- abas ---------- */
-  .abas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 4px; margin: 4px 0 20px; border-radius: 12px; background: var(--campo); border: 1px solid var(--grafite2); }
-  .abas button { min-height: 46px; border: 0; border-radius: 9px; background: none; font-size: 0.95rem; font-weight: 600; color: var(--suave); cursor: pointer; transition: background-color 200ms, color 200ms; }
-  .abas button:hover { color: var(--off); }
-  .abas button[aria-selected="true"] { background: var(--grafite2); color: var(--off); box-shadow: inset 0 -2px 0 var(--dourado); }
-
-  /* ---------- números (agenda e clientes): cartão grafite com régua dourada ----------
-     Datas e contagens usam algarismos tabulares; valores em reais usam proporcionais, porque o ponto de milhar
-     tabular destas fontes abre um vão ("2 . 8 0 0"). */
-  .numeros { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 14px; }
-  .numeros > div { display: grid; gap: 4px; align-content: center; min-width: 0; min-height: 86px; padding: 12px 12px 11px 14px; border-radius: 12px; border: 1px solid var(--grafite2); background: var(--grafite); box-shadow: inset 2px 0 0 rgba(201, 169, 106, 0.5), var(--sombra); }
-  .numeros b { display: block; min-width: 0; font-family: var(--display); font-weight: 700; font-size: 1.8rem; line-height: 1.05; letter-spacing: -0.02em; font-variant-numeric: lining-nums proportional-nums; white-space: nowrap; overflow: hidden; }
-  .numeros span { font-size: 0.78rem; line-height: 1.25; color: var(--suave); }
-  .numeros .total { border-color: var(--linha-ouro); box-shadow: inset 2px 0 0 var(--dourado), var(--sombra); }
-  .numeros .total b { color: var(--dourado2); }
-  .numeros .livre b { color: var(--verde-txt); }
-  .filtros { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 4px; margin-top: 10px; border-radius: 12px; background: var(--campo); border: 1px solid var(--grafite2); }
-  .filtros button { min-height: 44px; padding: 0 2px; border: 0; border-radius: 9px; background: none; font-size: 0.86rem; font-weight: 500; color: var(--suave); cursor: pointer; white-space: nowrap; }
-  .filtros button[aria-pressed="true"] { background: var(--off); color: var(--preto); font-weight: 700; }
-  @media (max-width: 359px) {
-    .numeros { grid-template-columns: 1fr 1fr; }
-    .numeros > div:last-child { grid-column: 1 / -1; }
-    .filtros button { font-size: 0.8rem; }
-  }
-
-  .cards { display: grid; gap: 12px; margin-top: 14px; }
-  .pcard { background: var(--grafite); box-shadow: var(--sombra); border: 1px solid var(--grafite2); border-radius: 14px; padding: 16px; display: grid; gap: 14px; }
-  .pcard .abrir { position: relative; display: grid; gap: 4px; justify-items: start; min-height: 44px; padding: 0 30px 0 0; text-align: left; background: none; border: 0; cursor: pointer; }
-  .pcard .abrir::after { content: "›"; position: absolute; right: 2px; top: -6px; font-size: 1.9rem; line-height: 1; color: var(--dourado); }
-  .pcard .nome { font-family: var(--display); font-size: 1.22rem; font-weight: 700; letter-spacing: -0.01em; line-height: 1.22; overflow-wrap: anywhere; }
-  .pcard .sub { color: var(--suave); font-size: 0.93rem; }
-  .pcard .valor { font-weight: 700; font-size: 1.04rem; color: var(--dourado2); font-variant-numeric: lining-nums proportional-nums; }
-  .pcard.perdida .valor { color: var(--suave); font-weight: 400; }
-  .pcard .vista { font-size: 0.88rem; color: var(--suave); }
-  .pcard .vista.sim { color: var(--off); }
-  .pcard .vista.sim i { font-style: normal; color: var(--dourado); }
-  .selo { display: inline-block; margin-top: 3px; padding: 5px 12px; border-radius: 8px; font-size: 0.86rem; font-weight: 500; line-height: 1.35; }
-  .selo.fechada { background: rgba(76, 175, 135, 0.12); border: 1px solid rgba(76, 175, 135, 0.45); color: var(--verde-txt); }
-  .selo.perdida { background: rgba(245, 240, 232, 0.05); border: 1px solid rgba(245, 240, 232, 0.16); color: var(--suave); }
-  .pcard .acoes { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .pcard .acoes.tres { grid-template-columns: 1.05fr 1.1fr 0.85fr; }
-  .pcard .acoes .b { padding-inline: 6px; }
-  @media (max-width: 359px) { .pcard .acoes.tres { grid-template-columns: 1fr 1fr; } .pcard .acoes.tres .b-verde { grid-column: 1 / -1; } }
-  .vazio { text-align: center; padding: 40px 20px; border: 1px dashed rgba(201, 169, 106, 0.4); border-radius: 14px; color: var(--suave); display: grid; gap: 8px; justify-items: center; }
-  .vazio::before { content: ""; width: 32px; height: 2px; margin-bottom: 4px; background: var(--dourado); }
-  .vazio b { font-family: var(--display); font-weight: 700; font-size: 1.4rem; letter-spacing: -0.015em; line-height: 1.2; color: var(--off); text-wrap: balance; }
-  .rodape-lista { text-align: center; margin-top: 22px; }
-  .carregando { text-align: center; color: var(--suave); padding: 40px 0; }
-
-  /* cartão "Sua proposta padrão" (Propostas) */
-  .cartao-modelo { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px 14px; margin-top: 12px; padding: 14px 14px 14px 16px; border-radius: 14px; border: 1px solid var(--linha-ouro); background: var(--grafite); box-shadow: inset 2px 0 0 var(--dourado), var(--sombra); }
-  .cartao-modelo .txt { display: grid; gap: 3px; min-width: 0; }
-  .cartao-modelo b { font-family: var(--display); font-weight: 700; font-size: 1.12rem; letter-spacing: -0.01em; line-height: 1.25; }
-  .cartao-modelo span { color: var(--suave); font-size: 0.88rem; line-height: 1.4; }
-  @media (max-width: 379px) { .cartao-modelo { grid-template-columns: 1fr; } .cartao-modelo .b { width: 100%; } }
-
-  /* ---------- agenda ---------- */
-  .mes-nav { display: flex; align-items: center; gap: 8px; margin-top: 16px; }
-  .mes-nav b { flex: 1; min-width: 0; text-align: center; font-family: var(--display); font-weight: 700; font-size: 1.45rem; letter-spacing: -0.02em; line-height: 1.1; }
-  .mes-nav .seta { min-width: 46px; padding: 0; font-size: 1.5rem; line-height: 1; }
-  .mes-hoje { text-align: center; }
-  .cal { margin-top: 14px; padding: 12px 10px 10px; border-radius: 14px; border: 1px solid var(--grafite2); background: var(--grafite); box-shadow: var(--sombra); }
-  .cal-sem { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.14em; color: var(--suave); margin-bottom: 6px; }
-  .cal-sem span:last-child { color: var(--dourado2); }
-  .cal-grade { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
-  .dia { -webkit-appearance: none; appearance: none; display: grid; justify-items: center; align-content: center; gap: 3px; min-height: 46px; padding: 4px 0; border: 1px solid transparent; border-radius: 9px; background: none; color: var(--off); font-size: 0.95rem; line-height: 1; font-variant-numeric: tabular-nums; cursor: default; }
-  .dia.vazio { visibility: hidden; }
-  .dia.sab { background: rgba(201, 169, 106, 0.08); }
-  .dia.passado { color: rgba(245, 240, 232, 0.36); }
-  .dia.hoje { border-color: var(--dourado2); }
-  .dia.fechado { background: rgba(76, 175, 135, 0.2); }
-  .dia.fechado.passado { background: rgba(76, 175, 135, 0.08); }
-  button.dia { cursor: pointer; }
-  button.dia[aria-pressed="true"] { background: var(--off); color: var(--preto); border-color: var(--off); }
-  .dia .pontos { display: flex; gap: 3px; height: 6px; }
-  .dia .pontos i { width: 6px; height: 6px; border-radius: 50%; }
-  .dia .pontos i.f { background: var(--verde); }
-  .dia .pontos i.a { border: 1.5px solid var(--dourado2); }
-  button.dia[aria-pressed="true"] .pontos i.f { background: #2E7D5E; }
-  button.dia[aria-pressed="true"] .pontos i.a { border-color: #8A6D2F; }
-  .legenda { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 10px 4px 0; font-size: 0.8rem; color: var(--suave); }
-  .legenda i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
-  .legenda i.f { background: var(--verde); }
-  .legenda i.a { border: 1.5px solid var(--dourado2); }
-  .legenda i.s { background: rgba(201, 169, 106, 0.4); border-radius: 2px; }
-  .vendas { margin-top: 14px; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--linha); background: rgba(201, 169, 106, 0.06); font-size: 0.93rem; line-height: 1.5; color: var(--suave); }
-  .vendas b { color: var(--dourado2); font-weight: 600; font-variant-numeric: lining-nums proportional-nums; }
-  .secao { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 10px; margin: 24px 2px 10px; font-size: 0.74rem; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--dourado); }
-  .secao::before { content: ""; width: 22px; height: 1px; background: var(--dourado); }
-  .secao small { font-size: 0.86rem; font-weight: 400; letter-spacing: 0; text-transform: none; color: var(--suave); }
-  .secao .texto-link { min-height: 0; padding: 0; font-size: 0.86rem; font-weight: 400; letter-spacing: 0; text-transform: none; }
-  .mes-lista { display: grid; gap: 8px; }
-  .nada { color: var(--suave); font-size: 0.93rem; padding: 4px 2px; }
-  .evt { display: grid; grid-template-columns: 46px minmax(0, 1fr) auto; gap: 12px; align-items: center; width: 100%; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--grafite2); background: var(--grafite); box-shadow: var(--sombra); text-align: left; cursor: pointer; }
-  .evt.aberta { border-style: dashed; border-color: rgba(201, 169, 106, 0.4); background: none; box-shadow: none; }
-  .evt .d { display: grid; justify-items: center; line-height: 1; }
-  .evt .d b { font-family: var(--display); font-weight: 700; font-size: 1.5rem; font-variant-numeric: tabular-nums; }
-  .evt .d small { margin-top: 4px; font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--suave); }
-  .evt .t { min-width: 0; display: grid; gap: 2px; }
-  .evt .t b { font-weight: 600; font-size: 1.02rem; line-height: 1.25; overflow-wrap: anywhere; }
-  .evt .t span { font-size: 0.85rem; line-height: 1.35; color: var(--suave); overflow-wrap: anywhere; }
-  .evt .v { font-weight: 700; font-size: 0.95rem; color: var(--dourado2); white-space: nowrap; font-variant-numeric: lining-nums proportional-nums; }
-  .evt.aberta .v { font-weight: 400; font-size: 0.82rem; color: var(--suave); }
-  .meses { display: flex; gap: 8px; overflow-x: auto; margin: 0 -18px; padding: 2px 18px 10px; scroll-padding-inline: 18px; scroll-snap-type: x proximity; scrollbar-width: none; }
-  @media (min-width: 600px) { .meses { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); overflow: visible; margin: 0; padding: 2px 0 10px; } .mes-chip { min-width: 0; } }
-  .meses::-webkit-scrollbar { display: none; }
-  .mes-chip { flex: 0 0 auto; scroll-snap-align: start; min-width: 124px; display: grid; gap: 3px; padding: 10px 12px 11px; border-radius: 12px; border: 1px solid var(--grafite2); background: var(--grafite); text-align: left; cursor: pointer; }
-  .mes-chip b { font-family: var(--display); font-weight: 700; font-size: 1.05rem; letter-spacing: -0.01em; line-height: 1.2; }
-  .mes-chip span { font-size: 0.78rem; line-height: 1.3; color: var(--suave); white-space: nowrap; }
-  .mes-chip .livre { color: var(--verde-txt); }
-  .mes-chip.cheio .livre { color: var(--ambar-txt); }
-  .mes-chip .ab { color: var(--dourado2); }
-  .mes-chip[aria-pressed="true"] { border-color: var(--dourado); box-shadow: inset 0 -2px 0 var(--dourado); background: #202020; }
-
-  .dia.cheio { background: rgba(76, 175, 135, 0.38); }
-  .dia.cheio.passado { background: rgba(76, 175, 135, 0.12); }
-  .legenda i.c { background: rgba(76, 175, 135, 0.6); border-radius: 2px; }
-
-  .evt .d small.h { margin-top: 3px; color: var(--dourado2); letter-spacing: 0.02em; text-transform: none; font-size: 0.72rem; }
-
-  /* ---------- clientes ---------- */
-  .filtros.dois { grid-template-columns: 1fr 1fr; margin-top: 4px; }
-  .periodos { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
-  .periodos button { min-height: 40px; padding: 6px 14px; border-radius: 8px; border: 1px solid var(--grafite2); background: none; color: var(--suave); font-size: 0.88rem; font-weight: 500; cursor: pointer; }
-  .periodos button:hover { border-color: var(--grafite3); color: var(--off); }
-  .periodos button[aria-pressed="true"] { background: var(--off); border-color: var(--off); color: var(--preto); font-weight: 700; }
-  .datas-livres { margin-top: 10px; }
-  .periodo-txt { margin-top: 10px; font-size: 0.86rem; line-height: 1.45; color: var(--suave); }
-  .periodo-txt b { color: var(--off); font-weight: 500; }
-  .mes-a-mes { display: grid; padding: 4px 14px; border-radius: 12px; border: 1px solid var(--grafite2); background: var(--grafite); box-shadow: var(--sombra); }
-  .linha-mes { display: grid; grid-template-columns: 74px minmax(0, 1fr) auto; gap: 10px; align-items: center; width: 100%; min-height: 48px; padding: 8px 0; background: none; border: 0; border-bottom: 1px solid var(--linha); color: inherit; text-align: left; cursor: pointer; }
-  .linha-mes:last-child { border-bottom: 0; }
-  .linha-mes .m { font-family: var(--display); font-weight: 600; font-size: 1rem; line-height: 1.2; }
-  .linha-mes .trilho { height: 8px; border-radius: 999px; background: rgba(245, 240, 232, 0.07); overflow: hidden; }
-  .linha-mes .trilho i { display: block; height: 100%; min-width: 4px; border-radius: inherit; background: linear-gradient(90deg, var(--dourado), var(--dourado2)); }
-  .linha-mes .v { display: grid; justify-items: end; font-size: 0.92rem; font-weight: 700; color: var(--dourado2); white-space: nowrap; line-height: 1.25; font-variant-numeric: lining-nums proportional-nums; }
-  .linha-mes .v small { font-size: 0.76rem; font-weight: 400; color: var(--suave); }
-  .pcard .fechou-em { font-size: 0.86rem; color: var(--suave); }
-  .pcard .quando { font-size: 0.95rem; color: var(--off); }
-  .pcard .quando b { font-weight: 600; color: var(--dourado2); }
-  details.passados { margin-top: 22px; }
-  details.passados > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 10px; min-height: 44px; font-size: 0.74rem; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: var(--dourado); }
-  details.passados > summary::before { content: ""; width: 22px; height: 1px; background: var(--dourado); }
-  details.passados > summary::-webkit-details-marker { display: none; }
-  details.passados > summary small { font-size: 0.86rem; font-weight: 400; letter-spacing: 0; text-transform: none; color: var(--suave); }
-  details.passados > summary::after { content: "+"; margin-left: auto; font-size: 1.4rem; font-weight: 400; line-height: 1; color: var(--dourado); }
-  details.passados[open] > summary::after { content: "–"; }
-  details.passados .cards { margin-top: 6px; opacity: 0.85; }
-
-  .aviso-data { display: block; padding: 10px 12px; border-radius: 10px; font-size: 0.88rem; line-height: 1.4; color: var(--ambar-txt); background: rgba(217, 169, 74, 0.1); border: 1px solid rgba(217, 169, 74, 0.45); }
-  /* ---------- editor ---------- */
-  .situacao { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 12px; margin-bottom: 12px; }
-  .situacao .txt { flex: 1 1 180px; min-width: 0; display: grid; gap: 2px; }
-  .situacao .bts { display: flex; gap: 8px; }
-  .situacao b { font-weight: 700; font-size: 1.06rem; font-variant-numeric: lining-nums proportional-nums; }
-  .situacao .txt span { font-size: 0.9rem; color: var(--suave); overflow-wrap: anywhere; }
-  .situacao.fechada { background: rgba(76, 175, 135, 0.1); border: 1px solid rgba(76, 175, 135, 0.42); }
-  .situacao.fechada b { color: var(--verde-txt); }
-  .situacao.fechada .txt span { color: rgba(245, 240, 232, 0.82); }
-  .situacao.perdida { background: rgba(245, 240, 232, 0.05); border: 1px solid rgba(245, 240, 232, 0.16); }
-  .envio { display: grid; gap: 8px; grid-template-columns: 1fr 1fr; margin-bottom: 14px; }
-  .envio .largo { grid-column: 1 / -1; }
-
-  .passo { background: var(--grafite); box-shadow: var(--sombra); border: 1px solid var(--grafite2); border-radius: 14px; padding: 18px 16px; margin-bottom: 12px; display: grid; gap: 14px; }
-  .passo > h3 { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 10px; font-family: var(--display); font-size: 1.14rem; font-weight: 700; letter-spacing: -0.01em; line-height: 1.3; }
-  .passo > h3 .n { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--dourado); color: var(--dourado2); font-size: 0.86rem; font-weight: 700; flex: none; }
-  .passo > h3 small { font-family: var(--sans); font-weight: 400; letter-spacing: 0; color: var(--suave); font-size: 0.88rem; }
-  .campo { display: grid; gap: 6px; min-width: 0; }
-  .campo > span { font-size: 0.9rem; font-weight: 500; color: var(--suave); }
-  .campo small, .dica { color: var(--suave); font-size: 0.84rem; line-height: 1.45; }
-  .duas { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
-  @media (max-width: 520px) { .duas.quebra { grid-template-columns: minmax(0, 1fr); gap: 14px; } }
-  @media (max-width: 339px) { .duas.quebra-p { grid-template-columns: minmax(0, 1fr); gap: 14px; } }
-  input[type=text], input[type=password], input[type=date], input[type=time], input[type=number], textarea {
-    display: block; width: 100%; min-width: 0; min-height: 52px; padding: 12px 14px; border-radius: 8px;
-    border: 1px solid var(--linha-campo); background: var(--campo); font-size: 16px; line-height: 1.4;
-  }
-  input::placeholder, textarea::placeholder { color: rgba(245, 240, 232, 0.34); }
-  input:focus, textarea:focus { outline: none; border-color: var(--dourado2); }
-  textarea { resize: vertical; min-height: 96px; }
-  input[type=date], input[type=time] { color-scheme: dark; -webkit-appearance: none; appearance: none; padding-inline: 12px 10px; }
-  input.falta, textarea.falta, .dinheiro.falta { border-color: var(--vermelho); box-shadow: 0 0 0 1px var(--vermelho); }   /* textarea: nome do adicional */
-
-  .dinheiro { display: flex; align-items: center; min-width: 0; border-radius: 8px; border: 1px solid var(--linha-campo); background: var(--campo); }
-  .dinheiro:focus-within { border-color: var(--dourado2); }
-  .dinheiro > span { padding: 0 2px 0 13px; color: var(--dourado2); font-weight: 600; }
-  .dinheiro input { border: 0; background: none; padding-left: 6px; font-variant-numeric: lining-nums proportional-nums; }
-  .dinheiro input:focus { border: 0; }
-
-  /* interruptor (liga/desliga) */
-  .chave { -webkit-appearance: none; appearance: none; flex: none; position: relative; width: 54px; height: 32px; border-radius: 999px; background: var(--grafite3); border: 1px solid rgba(245, 240, 232, 0.2); cursor: pointer; transition: background-color 200ms, border-color 200ms; }
-  .chave::after { content: ""; position: absolute; top: 3px; left: 3px; width: 24px; height: 24px; border-radius: 50%; background: var(--off); transition: transform 200ms var(--ease), background-color 200ms; }
-  .chave:checked { background: var(--dourado); border-color: var(--dourado); }
-  .chave:checked::after { transform: translateX(22px); background: var(--preto); }
-  .liga-linha { display: flex; align-items: center; justify-content: space-between; gap: 14px; min-height: 52px; cursor: pointer; }
-  .liga-linha > span { font-size: 1rem; }
-  .liga-linha > span small { display: block; color: var(--suave); font-size: 0.86rem; }
-
-  /* as 3 opções (Simples · Média · Completa) */
-  .opc { border-top: 1px solid var(--linha); padding: 14px 0 16px; }
-  .opc:first-child { border-top: 0; padding-top: 0; }
-  .opc.off { padding-bottom: 4px; }
-  .opc-topo { display: flex; align-items: center; justify-content: space-between; gap: 14px; min-height: 54px; cursor: pointer; }
-  .opc-tit { font-size: 1.08rem; line-height: 1.3; min-width: 0; overflow-wrap: anywhere; }
-  .opc-tit b { font-weight: 700; }
-  .opc-tit span { color: var(--dourado2); }
-  .opc.off .opc-tit { opacity: 0.5; }
-  .opc.off .opc-corpo { display: none; }
-  .opc-corpo { display: grid; gap: 12px; }
-  /* posição da opção na proposta (setas) e como ela mostra o valor */
-  .opc-cab { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-  .opc-pos { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dourado); }
-  .opc.off .opc-pos { color: var(--suave); }
-  .mover { display: flex; gap: 6px; flex: none; }
-  .mover button { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 8px; border: 1px solid var(--grafite2); background: var(--campo); color: var(--dourado2); font-size: 1.15rem; line-height: 1; cursor: pointer; }
-  .mover button:hover:not(:disabled) { border-color: var(--dourado); }
-  .mover button:disabled { opacity: 0.28; cursor: default; }
-  .modo { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; padding: 4px; border-radius: 10px; background: var(--campo); border: 1px solid var(--grafite2); }
-  .modo button { min-height: 44px; padding: 4px 6px; border: 0; border-radius: 7px; background: none; color: var(--suave); font-size: 0.9rem; font-weight: 500; line-height: 1.2; cursor: pointer; }
-  .modo button[aria-pressed="true"] { background: var(--off); color: var(--preto); font-weight: 700; }
-  .duas.precos { align-items: end; }
-  .opc[data-ver="junto"] .cer, .opc[data-ver="cerimonia"] .rec { display: none; }
-  .opc.movida { animation: movida 1s var(--ease); }
-  @keyframes movida { from { background-color: rgba(201, 169, 106, 0.16); } to { background-color: transparent; } }
-  @media (prefers-reduced-motion: reduce) { .opc.movida { animation: none; } }
-  .sugerir { justify-self: start; min-height: 44px; padding: 8px 18px; border-radius: 8px; border: 1px dashed rgba(201, 169, 106, 0.5); background: none; color: var(--suave); font-size: 0.92rem; cursor: pointer; }
-  .sugerir[aria-pressed="true"] { border-style: solid; border-color: var(--dourado); background: rgba(201, 169, 106, 0.16); color: var(--dourado2); font-weight: 600; }
-
-  details.mais { margin: 6px 0 12px; border: 1px solid var(--grafite2); border-radius: 14px; background: var(--grafite); box-shadow: var(--sombra); }
-  details.mais > summary { list-style: none; cursor: pointer; min-height: 64px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; font-family: var(--display); font-weight: 700; font-size: 1.08rem; letter-spacing: -0.01em; }
-  details.mais > summary::-webkit-details-marker { display: none; }
-  details.mais > summary small { display: block; font-family: var(--sans); font-weight: 400; letter-spacing: 0; color: var(--suave); font-size: 0.86rem; }
-  details.mais > summary::after { content: "+"; font-family: var(--sans); font-size: 1.7rem; font-weight: 400; line-height: 1; color: var(--dourado); }
-  details.mais[open] > summary::after { content: "–"; }
-  details.mais .dentro { padding: 0 16px 18px; display: grid; gap: 18px; }
-  .grupo { display: grid; gap: 12px; padding-top: 16px; border-top: 1px solid var(--linha); }
-  .grupo:first-child { border-top: 0; padding-top: 0; }
-  .grupo > b { font-weight: 700; font-size: 1.02rem; }
-  .grupo > b span { color: var(--dourado2); font-weight: 500; }
-  .adic-linha { display: grid; grid-template-columns: minmax(0, 1fr) 94px 44px; gap: 6px; align-items: start; }
-  .adic-linha .x-nome { min-height: 52px; height: 52px; padding: 14px 12px; resize: none; overflow: hidden; }   /* nome comprido quebra em duas linhas */
-  .adic-linha .dinheiro > span { padding-left: 10px; }
-  .adic-linha .dinheiro input { padding-right: 6px; }
-  .adic-linha .remover { min-height: 52px; padding: 0; border-radius: 8px; font-size: 1.5rem; font-weight: 400; line-height: 1; }
-  .tracejado { width: 100%; border-style: dashed; }
-
-  .barra { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; padding: 12px 18px calc(12px + env(safe-area-inset-bottom)); background: rgba(10, 10, 10, 0.92); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-top: 1px solid var(--grafite2); }
-  .barra .in { max-width: 624px; margin: 0 auto; }
-
-  /* ---------- folhas (guia · proposta pronta · fechou?) ---------- */
-  .folha-fundo { position: fixed; inset: 0; z-index: 40; background: rgba(0, 0, 0, 0.72); display: flex; align-items: flex-end; justify-content: center; }
-  .folha { width: min(100%, 640px); max-height: 94svh; overflow-y: auto; -webkit-overflow-scrolling: touch; background: var(--folha); border: 1px solid var(--grafite2); border-top-color: var(--linha-ouro); border-bottom: 0; border-radius: 18px 18px 0 0; padding: 22px 18px calc(18px + env(safe-area-inset-bottom)); display: grid; gap: 14px; animation: sobe 300ms var(--ease); }
-  .folha::before { content: ""; justify-self: center; align-self: center; width: 40px; height: 4px; margin: -10px 0 -4px; border-radius: 2px; background: var(--grafite3); }
-  .folha:focus { outline: none; }
-  @keyframes sobe { from { transform: translateY(40px); opacity: 0; } }
-  @media (prefers-reduced-motion: reduce) { .folha { animation: none; } * { transition: none !important; } }
-  @media (min-width: 720px) and (min-height: 620px) {   /* no computador a folha vira uma janela no meio da tela */
-    .folha-fundo { align-items: center; padding: 24px; }
-    .folha { border-radius: 18px; border-bottom: 1px solid var(--grafite2); max-height: calc(100svh - 48px); padding-bottom: 22px; }
-    .folha::before { display: none; }
-  }
-  .folha h3 { font-family: var(--display); font-weight: 800; font-size: 1.85rem; letter-spacing: -0.025em; line-height: 1.08; text-wrap: balance; }
-  .folha p { color: var(--suave); font-size: 0.95rem; }
-  .folha .quem { margin-top: -8px; color: var(--off); }
-  .folha code { font-family: ui-monospace, Consolas, monospace; font-size: 0.86rem; word-break: break-all; color: var(--dourado2); padding: 12px 14px; border-radius: 10px; background: rgba(201, 169, 106, 0.08); border: 1px solid rgba(201, 169, 106, 0.22); }
-  .folha .nota-visitante { padding: 10px 12px; border-radius: 10px; background: rgba(201, 169, 106, 0.07); border: 1px solid rgba(201, 169, 106, 0.3); color: var(--bege); font-size: 0.9rem; line-height: 1.45; }
-  .parte { display: grid; gap: 14px; }
-  .escolhas { display: flex; flex-wrap: wrap; gap: 8px; }
-  .escolhas.grade { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-  .escolhas button { flex: 1 1 auto; min-width: 64px; min-height: 52px; padding: 8px 12px; border-radius: 10px; border: 1px solid var(--linha-campo); background: var(--campo); font-size: 1rem; font-weight: 500; line-height: 1.25; cursor: pointer; overflow-wrap: anywhere; }
-  .escolhas button:hover { border-color: var(--dourado); }
-  .escolhas button[aria-pressed="true"] { background: var(--dourado); border-color: var(--dourado); color: var(--preto); font-weight: 700; }
-  .valor-fechado input { font-size: 1.2rem; font-weight: 700; }
-  .fx-adics { display: grid; gap: 8px; }
-  .fx-adics:empty { display: none; }
-  .folha .fx-total { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 12px 14px; border-radius: 10px; background: rgba(201, 169, 106, 0.1); border: 1px solid var(--linha-ouro); color: var(--off); }
-  .folha .fx-total b { font-family: var(--display); font-size: 1.25rem; font-weight: 700; color: var(--dourado2); white-space: nowrap; font-variant-numeric: lining-nums proportional-nums; }
-  .motivos { display: flex; flex-wrap: wrap; gap: 8px; }
-  .motivos button { min-height: 44px; padding: 8px 14px; border-radius: 8px; border: 1px solid var(--linha-campo); background: none; font-size: 0.92rem; color: var(--off); cursor: pointer; }
-  .motivos button:hover { border-color: var(--dourado); }
-  .folha .pe { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: -4px; }
-  .folha .pe.centro { justify-content: center; }
-
-  /* guia de boas-vindas: o conteúdo rola e os botões ficam sempre à vista */
-  .folha.guia { display: flex; flex-direction: column; gap: 0; padding: 0; overflow: hidden; }
-  .folha.guia::before { margin: 10px auto 0; flex: none; }
-  /* o texto some aos poucos embaixo: sinal de que dá para rolar (no fim, o vão de baixo é só respiro) */
-  .guia-corpo { flex: 1 1 auto; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; display: grid; align-content: start; gap: 14px; padding: 18px 18px 30px; -webkit-mask-image: linear-gradient(#000 calc(100% - 34px), transparent); mask-image: linear-gradient(#000 calc(100% - 34px), transparent); }
-  .guia-pe { flex: none; display: grid; gap: 8px; padding: 10px 18px calc(10px + env(safe-area-inset-bottom)); border-top: 1px solid var(--grafite2); background: var(--folha); }
-  .guia-pe .pe { margin-top: -2px; }
-  @media (min-width: 560px) { .guia-pe { grid-template-columns: 1fr 1fr; } .guia-pe .pe { grid-column: 1 / -1; } }
-  .rotulo { display: inline-flex; align-items: center; gap: 10px; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.24em; text-transform: uppercase; color: var(--dourado); }
-  .rotulo::before { content: ""; width: 22px; height: 1px; background: var(--dourado); }
-  .passos { list-style: none; display: grid; gap: 14px; margin: 2px 0; }
-  .passos li { display: grid; grid-template-columns: 32px minmax(0, 1fr); gap: 12px; align-items: start; }
-  .passos .n { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--dourado); color: var(--dourado2); font-family: var(--display); font-weight: 700; font-size: 0.95rem; }
-  .passos .t { display: grid; gap: 2px; padding-top: 4px; }
-  .passos .t b { font-family: var(--display); font-weight: 700; font-size: 1.06rem; letter-spacing: -0.01em; line-height: 1.25; color: var(--off); }
-  .passos .t span { color: var(--suave); font-size: 0.92rem; line-height: 1.45; }
-  .guia .fecho { padding: 12px 14px; border-radius: 10px; border: 1px solid rgba(201, 169, 106, 0.3); background: rgba(201, 169, 106, 0.07); color: var(--bege); font-size: 0.92rem; line-height: 1.5; }
-  @media (min-width: 720px) and (min-height: 620px) { .folha.guia { padding: 0; } .guia-corpo { padding: 24px 24px 16px; } .guia-pe { padding: 14px 24px 18px; } }
-
-  .aviso { padding: 12px 14px; border-radius: 10px; font-size: 0.95rem; background: rgba(217, 106, 90, 0.1); border: 1px solid rgba(217, 106, 90, 0.5); color: var(--vermelho-txt); text-align: left; }
-  .toast { position: fixed; left: 50%; bottom: calc(26px + env(safe-area-inset-bottom)); transform: translate(-50%, 20px); z-index: 50; width: max-content; max-width: calc(100vw - 32px); padding: 12px 20px; border-radius: 10px; background: var(--off); color: var(--preto); font-weight: 600; font-size: 0.95rem; line-height: 1.35; text-align: center; opacity: 0; pointer-events: none; transition: opacity 250ms, transform 250ms var(--ease); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55); }
-  .toast.on { opacity: 1; transform: translate(-50%, 0); }
-  body.tem-barra .toast { bottom: calc(100px + env(safe-area-inset-bottom)); }
-  /* com uma folha aberta, o aviso sobe para não cobrir os botões dela */
-  body.travado .toast { bottom: auto; top: calc(14px + env(safe-area-inset-top)); transform: translate(-50%, -20px); }
-  body.travado .toast.on { transform: translate(-50%, 0); }
-</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500&family=DM+Mono:wght@400&display=swap">
+<link rel="stylesheet" href="painel.css">
 </head>
 <body>
 
@@ -466,7 +47,7 @@
   <form id="fLogin">
     <span class="logo grande marca" role="img" aria-label="RK Performance"><span class="rk" aria-hidden="true">RK</span><span class="sep" aria-hidden="true"></span><span class="perf" aria-hidden="true">PERFORMANCE</span></span>
     <h1>Painel de propostas</h1>
-    <p class="lead">Propostas, agenda e faturamento do músico num lugar só.</p>
+    <p class="lead">Propostas, agenda e faturamento do seu negócio num lugar só.</p>
     <p class="nota-cores">Na sua versão, o painel e a página da proposta são feitos com a paleta do seu site: todo o sistema é entregue personalizado para o seu negócio.</p>
     <div class="senha-caixa">
       <input type="password" id="senha" autocomplete="current-password" placeholder="Senha do painel" required aria-label="Senha do painel">
@@ -501,7 +82,7 @@
   <div id="abaAgenda" role="tabpanel">
     <h2 class="titulo">Sua agenda</h2>
     <div class="dica-visitante" data-dica="agenda" hidden>
-      <p>O mês de relance: casamentos fechados, propostas aguardando resposta e sábados livres. Toque num dia marcado para ver quem é.</p>
+      <p>O mês de relance: eventos fechados, propostas aguardando resposta e sábados livres. Toque num dia marcado para ver quem é.</p>
       <button class="dica-fechar" type="button" aria-label="Fechar a dica">×</button>
     </div>
     <button class="b b-ouro b-cheio" type="button" id="btNovaAgenda">+ Nova proposta</button>
@@ -512,12 +93,12 @@
     </div>
     <div class="mes-hoje"><button class="texto-link" type="button" id="mesHoje" hidden>Voltar para este mês</button></div>
     <div class="numeros" role="group" aria-label="Como está o mês">
-      <div><b id="mCasamentos">–</b><span id="mCasamentosRot">Casamentos fechados</span></div>
+      <div><b id="mCasamentos">–</b><span id="mCasamentosRot">Eventos fechados</span></div>
       <div class="livre"><b id="mLivres">–</b><span id="mLivresRot">Sábados com vaga</span></div>
       <div><b id="mAguardando">–</b><span>Aguardando resposta</span></div>
     </div>
     <div class="cal" id="cal" role="group" aria-label="Calendário do mês"></div>
-    <p class="legenda"><span><i class="f"></i>Casamento fechado</span><span><i class="a"></i>Proposta em aberto</span><span><i class="c"></i>Dia cheio (2)</span><span><i class="s"></i>Sábado</span></p>
+    <p class="legenda"><span><i class="f"></i>Evento fechado</span><span><i class="a"></i>Proposta em aberto</span><span><i class="c"></i>Dia cheio (2)</span><span><i class="s"></i>Sábado</span></p>
     <p class="vendas" id="mesVendas"></p>
     <div class="secao" id="mesListaTit">Neste mês</div>
     <div class="mes-lista" id="mesLista"></div>
@@ -529,12 +110,12 @@
   <div id="abaPropostas" role="tabpanel" hidden>
     <h2 class="titulo">Suas propostas</h2>
     <div class="dica-visitante" data-dica="propostas" hidden>
-      <p>Crie a proposta de um casal em 1 minuto e mande o link pelo WhatsApp. O cartão mostra quando o casal abriu. Fechou? É só marcar.</p>
+      <p>Crie a proposta de um cliente em 1 minuto e mande o link pelo WhatsApp. O cartão mostra quando o cliente abriu. Fechou? É só marcar.</p>
       <button class="dica-fechar" type="button" aria-label="Fechar a dica">×</button>
     </div>
     <button class="b b-ouro b-cheio" type="button" id="btNova">+ Nova proposta</button>
     <div class="cartao-modelo" id="cartaoModelo">
-      <div class="txt"><b>Sua proposta padrão</b><span>Monte uma vez: formações, valores, adicionais e condições. Toda proposta nova começa dela.</span></div>
+      <div class="txt"><b>Sua proposta padrão</b><span>Monte uma vez: opções, valores, adicionais e condições. Toda proposta nova começa dela.</span></div>
       <button class="b b-pq b-contorno" type="button" id="btModeloCartao">Ajustar</button>
     </div>
     <div class="filtros" id="filtros" role="group" aria-label="Quais propostas mostrar">
@@ -546,15 +127,15 @@
     <div class="rodape-lista"><button class="texto-link" type="button" id="btModelo">Ajustar a proposta padrão</button></div>
   </div>
 
-  <!-- CLIENTES: os casais que fecharam -->
+  <!-- CLIENTES: quem fechou -->
   <div id="abaClientes" role="tabpanel" hidden>
     <h2 class="titulo">Seus clientes</h2>
     <div class="dica-visitante" data-dica="clientes" hidden>
-      <p>Quem fechou vira cliente aqui. O faturamento se soma sozinho: filtre pela data do casamento ou pela data em que fechou.</p>
+      <p>Quem fechou vira cliente aqui. O faturamento se soma sozinho: filtre pela data do evento ou pela data em que fechou.</p>
       <button class="dica-fechar" type="button" aria-label="Fechar a dica">×</button>
     </div>
     <div class="filtros dois" id="cliBase" role="group" aria-label="Contar pela data">
-      <button type="button" data-base="evento" aria-pressed="true">Data do casamento</button>
+      <button type="button" data-base="evento" aria-pressed="true">Data do evento</button>
       <button type="button" data-base="fechou" aria-pressed="false">Data em que fechou</button>
     </div>
     <div class="periodos" id="cliPeriodo" role="group" aria-label="Período"></div>
@@ -563,7 +144,7 @@
       <label class="campo"><span>Até</span><input type="date" id="cliAte"></label>
     </div>
     <div class="numeros" id="resumo" role="group" aria-label="Faturamento do período">
-      <div><b id="rFechadas">–</b><span id="rFechadasRot">Casamentos</span></div>
+      <div><b id="rFechadas">–</b><span id="rFechadasRot">Eventos</span></div>
       <div><b id="rMedio">–</b><span>Ticket médio</span></div>
       <div class="total"><b id="rTotal">–</b><span>Faturamento</span></div>
     </div>
@@ -582,7 +163,7 @@
   <h2 class="titulo" id="edTitulo">Nova proposta</h2>
   <p class="sub-titulo" data-so="modelo">Toda proposta nova começa com o que estiver aqui.</p>
   <div class="dica-visitante" data-dica="editor" data-modo="proposta" hidden>
-    <p>Preencha o casal, a data e o local, e escolha as opções. Ao salvar, o link sai pronto para mandar no WhatsApp.</p>
+    <p>Preencha o cliente, a data e o local, e escolha as opções. Ao salvar, o link sai pronto para mandar no WhatsApp.</p>
     <button class="dica-fechar" type="button" aria-label="Fechar a dica">×</button>
   </div>
   <div class="dica-visitante" data-dica="modelo" data-modo="modelo" hidden>
@@ -604,13 +185,13 @@
   <form id="fEd" autocomplete="off" novalidate>
     <div class="passo" data-so="proposta">
       <h3><span class="n">1</span> Para quem é?</h3>
-      <label class="campo"><span>Nome do casal</span><input type="text" id="fCliente" maxlength="120" placeholder="Ana &amp; João" autocapitalize="words" enterkeyhint="done"></label>
+      <label class="campo"><span>Nome do cliente</span><input type="text" id="fCliente" maxlength="120" placeholder="Ana &amp; João, Formatura Medicina…" autocapitalize="words" enterkeyhint="done"></label>
       <div class="duas">
         <label class="campo"><span>Data do evento</span><input type="date" id="fData"></label>
         <label class="campo"><span>Horário</span><input type="time" id="fHora" step="300"></label>
       </div>
       <small class="aviso-data" id="fDataAviso" role="status" hidden></small>
-      <label class="campo"><span>Local</span><input type="text" id="fLocal" maxlength="200" placeholder="Igreja ou cidade" enterkeyhint="done"></label>
+      <label class="campo"><span>Local</span><input type="text" id="fLocal" maxlength="200" placeholder="Salão, igreja ou cidade" enterkeyhint="done"></label>
     </div>
 
     <div class="passo" id="passoOpcoes">
@@ -623,7 +204,7 @@
 
     <div class="passo" data-so="proposta">
       <h3><span class="n">3</span> Quer deixar um recado? <small>(opcional)</small></h3>
-      <textarea id="fMensagem" maxlength="2000" rows="4" placeholder="Ex.: Ana e João, foi um prazer conhecer a história de vocês…" aria-label="Recado para o casal"></textarea>
+      <textarea id="fMensagem" maxlength="2000" rows="4" placeholder="Ex.: Ana e João, foi um prazer conhecer a história de vocês…" aria-label="Recado para o cliente"></textarea>
     </div>
 
     <details class="mais" id="maisOpcoes">
@@ -653,7 +234,12 @@
 
         <div class="grupo">
           <b>Na página da proposta</b>
-          <label class="campo"><span>Tipo de evento</span><input type="text" id="fTipo" maxlength="80" placeholder="Casamento" enterkeyhint="done"></label>
+          <label class="campo"><span>Tipo de evento</span><input type="text" id="fTipo" maxlength="80" placeholder="Casamento, formatura, corporativo…" enterkeyhint="done"></label>
+          <div class="duas quebra">
+            <label class="campo"><span>Nome do 1º valor</span><input type="text" id="fRotA" maxlength="40" placeholder="Ex.: Evento" enterkeyhint="done"></label>
+            <label class="campo"><span>Nome do 2º valor</span><input type="text" id="fRotB" maxlength="60" placeholder="Ex.: Evento + ensaio" enterkeyhint="done"></label>
+          </div>
+          <label class="campo"><span>Nota do 2º valor <small>(opcional)</small></span><input type="text" id="fRotNota" maxlength="140" placeholder="Ex.: Inclui um ensaio antes do evento" enterkeyhint="done"><small>Como a página chama os dois valores de cada opção. Vale para a proposta inteira.</small></label>
           <label class="liga-linha"><span>Mostrar os vídeos</span><input type="checkbox" class="chave" role="switch" id="sVideos"></label>
           <label class="liga-linha"><span>Mostrar os depoimentos</span><input type="checkbox" class="chave" role="switch" id="sDepoimentos"></label>
         </div>
@@ -679,12 +265,12 @@
       <h3 id="guiaTit">Como funciona o painel</h3>
       <p>Um passeio rápido. Mexa à vontade: nada aqui é salvo nem publicado.</p>
       <ol class="passos">
-        <li><span class="n" aria-hidden="true">1</span><div class="t"><b>Agenda</b><span>O mês de relance: casamentos fechados, propostas aguardando resposta, sábados livres.</span></div></li>
-        <li><span class="n" aria-hidden="true">2</span><div class="t"><b>Propostas</b><span>Crie a proposta de um casal em 1 minuto e mande o link pelo WhatsApp; veja quando o casal abriu.</span></div></li>
-        <li><span class="n" aria-hidden="true">3</span><div class="t"><b>Fechou?</b><span>Marque o que fechou (com adicionais) e o casal vira cliente; o faturamento se soma sozinho.</span></div></li>
-        <li><span class="n" aria-hidden="true">4</span><div class="t"><b>Sua proposta padrão</b><span>Monte uma vez suas formações, valores e adicionais; toda proposta nova começa dela.</span></div></li>
+        <li><span class="n" aria-hidden="true">1</span><div class="t"><b>Agenda</b><span>O mês de relance: eventos fechados, propostas aguardando resposta, sábados livres.</span></div></li>
+        <li><span class="n" aria-hidden="true">2</span><div class="t"><b>Propostas</b><span>Crie a proposta de um cliente em 1 minuto e mande o link pelo WhatsApp; veja quando ele abriu.</span></div></li>
+        <li><span class="n" aria-hidden="true">3</span><div class="t"><b>Fechou?</b><span>Marque o que fechou (com adicionais) e quem fechou vira cliente; o faturamento se soma sozinho.</span></div></li>
+        <li><span class="n" aria-hidden="true">4</span><div class="t"><b>Sua proposta padrão</b><span>Monte uma vez suas opções, valores e adicionais; toda proposta nova começa dela.</span></div></li>
       </ol>
-      <p class="fecho">Tudo aqui é exemplo. Na sua versão, o painel e a página da proposta são feitos com a paleta do seu site, e todo o sistema é entregue personalizado para o seu negócio: as suas formações, valores, fotos, vídeos e depoimentos.</p>
+      <p class="fecho">Tudo aqui é exemplo. Na sua versão, o painel e a página da proposta são feitos com a paleta do seu site, e todo o sistema é entregue personalizado para o seu negócio: as suas opções, valores, fotos, vídeos e depoimentos.</p>
     </div>
     <div class="guia-pe">
       <button class="b b-ouro b-cheio" type="button" id="guiaComecar">Começar</button>
@@ -698,9 +284,9 @@
 <div class="folha-fundo" id="folhaPronta" hidden>
   <div class="folha" role="dialog" aria-modal="true" aria-labelledby="prontaTit" tabindex="-1">
     <h3 id="prontaTit">Proposta pronta</h3>
-    <p>Copie o link e mande para o casal na conversa do WhatsApp:</p>
+    <p>Copie o link e mande para o cliente na conversa do WhatsApp:</p>
     <code id="prontaLink"></code>
-    <p class="nota-visitante so-visitante" id="prontaAvisoVisitante">No modo visitante, este link só abre neste aparelho. Na sua versão, ele vai para o casal pelo WhatsApp.</p>
+    <p class="nota-visitante so-visitante" id="prontaAvisoVisitante">No modo visitante, este link só abre neste aparelho. Na sua versão, ele vai para o cliente pelo WhatsApp.</p>
     <button class="b b-ouro b-cheio" type="button" data-acao="copiar">Copiar link</button>
     <a class="b b-cheio" id="prontaVer" href="#" target="_blank" rel="noopener">Ver proposta</a>
     <div class="pe centro"><button class="texto-link" type="button" id="prontaVoltar">Voltar para as propostas</button></div>
@@ -760,7 +346,7 @@
 (function () {
   'use strict';
   // ============================================================
-  // CONFIG — o que muda de um cliente para outro (para clonar a base para um músico de verdade:
+  // CONFIG — o que muda de um cliente para outro (para clonar a base para um cliente de verdade:
   // DEMO: false, a API dele e a marca dele). Contrato completo em ESPEC.md §3.
   // ============================================================
   var CONFIG = {
@@ -790,12 +376,31 @@
   var BASE_LINK = BASE + 'proposta/?p=';
   var CHAVE = CONFIG.CHAVE_SESSAO;
   var OPCOES = [{ k: 'simples', rot: 'Simples' }, { k: 'media', rot: 'Média' }, { k: 'completa', rot: 'Completa' }];
-  var PACOTES = { cerimonia: 'cerimônia', cerimonia_recepcao: 'cerimônia + recepção' };
+  // Os dois valores de cada opção têm chaves internas fixas (cerimonia = pacote A, cerimonia_recepcao = pacote B)
+  // e nomes que vêm dos dados da proposta (dados.rotulos). Proposta antiga sem rótulos lê os nomes de antes.
+  var ROTULOS_PADRAO = { pacote_a: 'Cerimônia', pacote_b: 'Cerimônia + recepção', nota_b: '' };
+  function limparRotulos(r) {
+    r = r && typeof r === 'object' ? r : {};
+    var t = function (v, max) { return (typeof v === 'string' ? v : '').slice(0, max).trim(); };
+    return { pacote_a: t(r.pacote_a, 40) || ROTULOS_PADRAO.pacote_a, pacote_b: t(r.pacote_b, 60) || ROTULOS_PADRAO.pacote_b, nota_b: t(r.nota_b, 140) };
+  }
+  function rotuloPacote(d, pacote) {
+    var r = limparRotulos(d && d.rotulos);
+    return pacote === 'cerimonia' ? r.pacote_a : pacote === 'cerimonia_recepcao' ? r.pacote_b : '';
+  }
+  function MODOS_DE(r) {
+    return [
+      { k: 'junto', rot: 'Junto', txt: 'A proposta mostra um valor só: ' + r.pacote_b + '.' },
+      { k: 'separado', rot: 'Separado', txt: 'A proposta mostra os dois valores: ' + r.pacote_a + ' e ' + r.pacote_b + '.' },
+      { k: 'cerimonia', rot: 'Só ' + r.pacote_a, txt: 'A proposta mostra só o valor de ' + r.pacote_a + '.' }
+    ];
+  }
   // como cada opção mostra o valor na proposta
-  var MODOS = [
-    { k: 'junto', rot: 'Junto', txt: 'A proposta mostra um valor só: cerimônia + recepção.' },
-    { k: 'separado', rot: 'Separado', txt: 'A proposta mostra o valor só da cerimônia e o valor com recepção.' },
-    { k: 'cerimonia', rot: 'Só cerimônia', txt: 'A proposta mostra só o valor da cerimônia.' }
+  var MODOS = MODOS_DE(ROTULOS_PADRAO);   // só as chaves; os textos são refeitos pelos rótulos da proposta (aplicarRotulos)
+  var MODOS_FIXOS = [
+    { k: 'junto' },
+    { k: 'separado' },
+    { k: 'cerimonia' }
   ];
   var MOTIVOS = ['Fechou com outro fornecedor', 'Achou o valor alto', 'Mudou os planos', 'Não respondeu mais'];
   var $ = function (id) { return document.getElementById(id); };
@@ -919,7 +524,7 @@
       });
       return {
         cliente: TXT(typeof d.cliente === 'string' ? d.cliente.trim() : '', 120).trim(),
-        tipo: TXT(d.tipo, 80), data: DATA(d.data), hora: HORA(d.hora), local: TXT(d.local, 200), mensagem: TXT(d.mensagem, 2000),
+        tipo: TXT(d.tipo, 80), rotulos: limparRotulos(d.rotulos), data: DATA(d.data), hora: HORA(d.hora), local: TXT(d.local, 200), mensagem: TXT(d.mensagem, 2000),
         opcoes: opcoes,
         ordem: limparOrdem(d.ordem, opcoes),
         sugestao: OPS.indexOf(d.sugestao) >= 0 && opcoes[d.sugestao].on ? d.sugestao : '',
@@ -1182,7 +787,7 @@
   function rotulosFechamento(p, comValor) {
     var f = p.fechamento || {}, ad = Array.isArray(f.adicionais) ? f.adicionais : [];
     var extras = ad.map(function (a) { return a.nome + (comValor && temValor(a.valor) ? ' (' + dinheiro(a.valor) + ')' : ''); });
-    return [nomeOpcao(p.dados, f.opcao), PACOTES[f.pacote]].filter(Boolean).concat(extras.length ? ['+ ' + extras.join(', ')] : []);
+    return [nomeOpcao(p.dados, f.opcao), rotuloPacote(p.dados, f.pacote)].filter(Boolean).concat(extras.length ? ['+ ' + extras.join(', ')] : []);
   }
   // o que cada opção mostra e em que ordem. Proposta antiga (sem isso por opção): as chaves globais valem para todas;
   // ordem "cara" = a de maior valor à mostra primeiro; sem ordem = simples → completa (igual à API)
@@ -1313,7 +918,7 @@
   // ---------- carregar ----------
   var VAZIO = {
     nada: ['Nenhuma proposta ainda', 'Toque em “+ Nova proposta”: são 3 perguntas e o link sai pronto.'],
-    abertas: ['Nenhuma proposta em aberto', 'Os casais que fecharam estão em “Clientes”; os que não fecharam, em “Não fechou”.'],
+    abertas: ['Nenhuma proposta em aberto', 'Os clientes que fecharam estão em “Clientes”; os que não fecharam, em “Não fechou”.'],
     perdidas: ['Nada por aqui', 'As propostas marcadas como “Não fechou” aparecem aqui.'],
     todas: ['Nenhuma proposta ainda', 'Toque em “+ Nova proposta”: são 3 perguntas e o link sai pronto.']
   };
@@ -1363,7 +968,7 @@
   function ordemData(a, b) { return ((a.dados.data || '') + (a.dados.hora || '')).localeCompare((b.dados.data || '') + (b.dados.hora || '')); }
   function somaFechado(lista) { return lista.reduce(function (a, p) { return a + valorFechado(p); }, 0); }
 
-  // ---------- clientes: os casais que fecharam, com filtros de data para o faturamento ----------
+  // ---------- clientes: quem fechou, com filtros de data para o faturamento ----------
   var PERIODOS = {
     evento: [['tudo', 'Tudo'], ['mes', 'Este mês'], ['prox', 'Próximo mês'], ['ano', 'Este ano'], ['anoprox', 'Ano que vem'], ['datas', 'Escolher datas']],
     fechou: [['tudo', 'Tudo'], ['mes', 'Este mês'], ['mespass', 'Mês passado'], ['ano', 'Este ano'], ['anopass', 'Ano passado'], ['datas', 'Escolher datas']]
@@ -1414,13 +1019,13 @@
   function desenharResumo() {
     var lista = fechadasDoFiltro(), total = somaFechado(lista);
     $('rFechadas').textContent = lista.length;
-    $('rFechadasRot').textContent = lista.length === 1 ? 'Casamento' : 'Casamentos';
+    $('rFechadasRot').textContent = lista.length === 1 ? 'Evento' : 'Eventos';
     $('rMedio').textContent = lista.length ? dinheiro(Math.round(total / lista.length)) : '–';
     $('rTotal').textContent = dinheiro(total);
     ajustarTotal();
-    var iv = intervalo(), txt = $('cliPeriodoTxt'), base = cli.base === 'fechou' ? 'pela data em que fechou' : 'pela data do casamento';
+    var iv = intervalo(), txt = $('cliPeriodoTxt'), base = cli.base === 'fechou' ? 'pela data em que fechou' : 'pela data do evento';
     limparNo(txt);
-    if (cli.periodo === 'tudo' || (!iv[0] && !iv[1])) txt.appendChild(document.createTextNode('Todos os casamentos fechados.'));
+    if (cli.periodo === 'tudo' || (!iv[0] && !iv[1])) txt.appendChild(document.createTextNode('Todos os eventos fechados.'));
     else {
       txt.appendChild(document.createTextNode(iv[0] && iv[1] ? 'De ' : (iv[0] ? 'A partir de ' : 'Até ')));
       if (iv[0]) txt.appendChild(el('b', null, dataCurta(iv[0])));
@@ -1448,14 +1053,14 @@
     var meses = Object.keys(por).sort();
     if (meses.length < 2) return;
     var max = Math.max.apply(null, meses.map(function (k) { return por[k].v; })) || 1;
-    box.appendChild(secao('Mês a mês', cli.base === 'fechou' ? 'pelo dia em que fechou' : 'pela data do casamento'));
+    box.appendChild(secao('Mês a mês', cli.base === 'fechou' ? 'pelo dia em que fechou' : 'pela data do evento'));
     var g = el('div', 'mes-a-mes');
     meses.forEach(function (k) {
       var y = +k.slice(0, 4), m = +k.slice(5, 7) - 1, row = botao('linha-mes');
-      row.setAttribute('aria-label', nomeMes(y, m) + ': ' + por[k].n + ' casamentos, ' + dinheiro(por[k].v));
+      row.setAttribute('aria-label', nomeMes(y, m) + ': ' + por[k].n + ' eventos, ' + dinheiro(por[k].v));
       row.appendChild(el('span', 'm', nomeMes(y, m, true) + ' ' + String(y).slice(2)));
       var tr = el('span', 'trilho'), barra = el('i'); barra.style.width = Math.max(3, Math.round(por[k].v / max * 100)) + '%'; tr.appendChild(barra); row.appendChild(tr);
-      var v = el('span', 'v', dinheiro(por[k].v)); v.appendChild(el('small', null, por[k].n + (por[k].n === 1 ? ' casamento' : ' casamentos'))); row.appendChild(v);
+      var v = el('span', 'v', dinheiro(por[k].v)); v.appendChild(el('small', null, por[k].n + (por[k].n === 1 ? ' evento' : ' eventos'))); row.appendChild(v);
       row.onclick = function () { cli.periodo = 'datas'; cli.de = k + '-01'; cli.ate = fimDoMes(y, m); desenharClientes(); };
       g.appendChild(row);
     });
@@ -1469,12 +1074,12 @@
     var fechadas = fechadasDoFiltro();
     desenharMeses(fechadas);
     if (!todasFechadas.length) {
-      var v = el('div', 'vazio'); v.appendChild(el('b', null, 'Nenhum casamento fechado ainda'));
-      v.appendChild(el('span', null, 'Quando um casal fechar, toque em “Fechou?” na proposta. Ele aparece aqui e na agenda.'));
+      var v = el('div', 'vazio'); v.appendChild(el('b', null, 'Nenhum evento fechado ainda'));
+      v.appendChild(el('span', null, 'Quando um cliente fechar, toque em “Fechou?” na proposta. Ele aparece aqui e na agenda.'));
       box.appendChild(v); return;
     }
     if (!fechadas.length) {
-      var nv = el('div', 'vazio'); nv.appendChild(el('b', null, 'Nenhum casamento neste período'));
+      var nv = el('div', 'vazio'); nv.appendChild(el('b', null, 'Nenhum evento neste período'));
       nv.appendChild(el('span', null, 'Troque o período ou toque em “Tudo”.'));
       box.appendChild(nv); return;
     }
@@ -1483,14 +1088,14 @@
     var pass = fechadas.filter(function (p) { return p.dados.data && p.dados.data < hoje; }).sort(ordemData).reverse();
     function grupo(lista) { var g = el('div', 'cards'); lista.forEach(function (p) { g.appendChild(cartaoCliente(p)); }); return g; }
     if (prox.length || cli.periodo === 'tudo') {
-      box.appendChild(secao('Próximos casamentos', prox.length ? prox.length + (prox.length === 1 ? ' data' : ' datas') : 'nenhuma data pela frente'));
+      box.appendChild(secao('Próximos eventos', prox.length ? prox.length + (prox.length === 1 ? ' data' : ' datas') : 'nenhuma data pela frente'));
       if (prox.length) box.appendChild(grupo(prox));
     }
     if (sem.length) { box.appendChild(secao('Sem data definida', sem.length)); box.appendChild(grupo(sem)); }
     if (pass.length) {
       var det = el('details', 'passados'), sum = el('summary');
       det.open = cli.periodo !== 'tudo';   // com um período escolhido, a lista já vem aberta
-      sum.appendChild(el('span', null, 'Já aconteceram')); sum.appendChild(el('small', null, pass.length + (pass.length === 1 ? ' casamento' : ' casamentos')));
+      sum.appendChild(el('span', null, 'Já aconteceram')); sum.appendChild(el('small', null, pass.length + (pass.length === 1 ? ' evento' : ' eventos')));
       det.appendChild(sum); det.appendChild(grupo(pass)); box.appendChild(det);
     }
   }
@@ -1541,7 +1146,7 @@
     $('mesTitulo').textContent = nomeMes(y, m);
     $('mesHoje').hidden = y === atual.y && m === atual.m;
     $('mCasamentos').textContent = r.fechados;
-    $('mCasamentosRot').textContent = r.fechados ? 'Casamentos · ' + dinheiro(r.valor) : 'Casamentos fechados';
+    $('mCasamentosRot').textContent = r.fechados ? 'Eventos · ' + dinheiro(r.valor) : 'Eventos fechados';
     $('mLivres').textContent = r.passado ? '–' : r.sabVaga;
     $('mLivresRot').textContent = 'Sábados com vaga' + (!r.passado && r.sabLivres !== r.sabVaga ? ' · ' + r.sabLivres + (r.sabLivres === 1 ? ' livre' : ' livres') : '');
     $('mAguardando').textContent = r.abertas;
@@ -1592,7 +1197,7 @@
     if (diaSel) { var todo = botao('texto-link', 'ver o mês todo'); todo.onclick = function () { diaSel = ''; desenharAgenda(); }; tit.appendChild(todo); }
     var lista = $('mesLista'); limparNo(lista);
     var datas = Object.keys(idx).filter(function (d) { return d.slice(0, 7) === chave && (!diaSel || d === diaSel); }).sort();
-    if (!datas.length) lista.appendChild(el('p', 'nada', r.passado ? 'Nenhum casamento neste mês.' : 'Nenhum casamento nem proposta com data neste mês.'));
+    if (!datas.length) lista.appendChild(el('p', 'nada', r.passado ? 'Nenhum evento neste mês.' : 'Nenhum evento nem proposta com data neste mês.'));
     datas.forEach(function (d) {
       idx[d].slice().sort(function (a, b) { return (a.dados.hora || '99').localeCompare(b.dados.hora || '99') || (etapaDe(a) === 'fechada' ? 0 : 1) - (etapaDe(b) === 'fechada' ? 0 : 1); }).forEach(function (p) { lista.appendChild(linhaEvento(p)); });
     });
@@ -1605,7 +1210,7 @@
         var chip = botao('mes-chip' + (rr.sabFuturos && !rr.sabVaga ? ' cheio' : ''));
         chip.setAttribute('aria-pressed', String(yy === y && mm === m));
         chip.appendChild(el('b', null, nomeMes(yy, mm, true) + ((k === 0 || mm === 0) ? ' ' + yy : '')));
-        chip.appendChild(el('span', null, rr.fechados + (rr.fechados === 1 ? ' casamento' : ' casamentos')));
+        chip.appendChild(el('span', null, rr.fechados + (rr.fechados === 1 ? ' evento' : ' eventos')));
         chip.appendChild(el('span', 'livre', rr.sabVaga ? rr.sabVaga + (rr.sabVaga === 1 ? ' sábado com vaga' : ' sábados com vaga') : 'sábados cheios'));
         if (rr.abertas) chip.appendChild(el('span', 'ab', rr.abertas + ' aguardando'));
         chip.onclick = function () { irParaMes(yy, mm); };
@@ -1639,8 +1244,8 @@
   }
   function textoData(r) {
     var partes = [], n = r.fechadas.length;
-    if (n >= POR_DIA) partes.push('Este dia já está cheio: ' + n + ' casamentos fechados (' + r.fechadas.join(', ') + ').');
-    else if (n) partes.push('Neste dia você já tem 1 casamento fechado (' + r.fechadas[0] + '). Ainda cabe mais um, se os horários permitirem.');
+    if (n >= POR_DIA) partes.push('Este dia já está cheio: ' + n + ' eventos fechados (' + r.fechadas.join(', ') + ').');
+    else if (n) partes.push('Neste dia você já tem 1 evento fechado (' + r.fechadas[0] + '). Ainda cabe mais um, se os horários permitirem.');
     if (r.abertas.length) partes.push((r.fechadas.length ? 'E ' : 'Neste dia ') + (r.abertas.length === 1 ? 'há 1 proposta aguardando resposta' : 'há ' + r.abertas.length + ' propostas aguardando resposta') + ' (' + r.abertas.join(', ') + ').');
     return partes.join(' ');
   }
@@ -1779,9 +1384,9 @@
     c.on = el('input', 'chave'); c.on.type = 'checkbox'; c.on.setAttribute('role', 'switch'); c.on.setAttribute('aria-label', 'Oferecer a opção ' + o.rot);
     topo.appendChild(tit); topo.appendChild(c.on);
     var corpo = el('div', 'opc-corpo'), duas = el('div', 'duas precos');
-    // junto (um valor: cerimônia + recepção) · separado (os dois valores) · só cerimônia
+    // junto (um valor: só o pacote B) · separado (os dois valores) · só o pacote A. Os nomes vêm dos rótulos da proposta (aplicarRotulos).
     var lModo = el('div', 'campo'), modo = el('div', 'modo');
-    modo.setAttribute('role', 'group'); modo.setAttribute('aria-label', 'Cerimônia e recepção na opção ' + o.rot);
+    modo.setAttribute('role', 'group'); modo.setAttribute('aria-label', 'Como mostrar o valor da opção ' + o.rot);
     c.modos = {};
     MODOS.forEach(function (m) {
       var b = botao(null, m.rot); b.setAttribute('aria-pressed', 'false');
@@ -1789,14 +1394,15 @@
       c.modos[m.k] = b; modo.appendChild(b);
     });
     c.modoTxt = el('small');
-    lModo.appendChild(el('span', null, 'Cerimônia e recepção')); lModo.appendChild(modo); lModo.appendChild(c.modoTxt);
-    c.cer = caixaDinheiro('Valor da cerimônia — ' + o.rot); c.rec = caixaDinheiro('Valor da cerimônia + recepção — ' + o.rot);
+    lModo.appendChild(el('span', null, 'Como mostrar o valor')); lModo.appendChild(modo); lModo.appendChild(c.modoTxt);
+    c.cer = caixaDinheiro('Primeiro valor da opção ' + o.rot); c.rec = caixaDinheiro('Segundo valor da opção ' + o.rot);
     // um valor basta: ao digitar um, as marcas de "falta" somem de todas
     var semFaltas = function () { OPCOES.forEach(function (x) { corrigir(C[x.k].cer.caixa); corrigir(C[x.k].rec.caixa); }); };
     c.cer.input.addEventListener('input', function () { if (temValor(parseValor(c.cer.input.value))) semFaltas(); });
     c.rec.input.addEventListener('input', function () { if (temValor(parseValor(c.rec.input.value))) semFaltas(); });
-    var lCer = campo('Cerimônia', c.cer.caixa); lCer.classList.add('cer');
-    var lRec = campo('Cerimônia + recepção', c.rec.caixa); lRec.classList.add('rec');
+    var lCer = campo(ROTULOS_PADRAO.pacote_a, c.cer.caixa); lCer.classList.add('cer');
+    var lRec = campo(ROTULOS_PADRAO.pacote_b, c.rec.caixa); lRec.classList.add('rec');
+    c.lCer = lCer; c.lRec = lRec;
     duas.appendChild(lCer); duas.appendChild(lRec);
     c.sug = botao('sugerir', 'Sugerir esta'); c.sug.setAttribute('aria-pressed', 'false');
     corpo.appendChild(lModo); corpo.appendChild(duas); corpo.appendChild(c.sug);
@@ -1828,10 +1434,24 @@
       C[o.k].sug.textContent = sim ? '★ Minha sugestão' : 'Sugerir esta';
     });
   }
+  // os rótulos digitados em "Na página da proposta" valem para o formulário inteiro: nomes dos campos de valor,
+  // botões de modo e a frase de cada modo
+  function rotAtual() { return limparRotulos({ pacote_a: $('fRotA').value, pacote_b: $('fRotB').value, nota_b: $('fRotNota').value }); }
+  function aplicarRotulos() {
+    var r = rotAtual(), ms = MODOS_DE(r);
+    OPCOES.forEach(function (o) {
+      var c = C[o.k]; if (!c || !c.lCer) return;
+      c.lCer.querySelector('span').textContent = r.pacote_a;
+      c.lRec.querySelector('span').textContent = r.pacote_b;
+      ms.forEach(function (m) { c.modos[m.k].textContent = m.rot; if (c.modo === m.k) c.modoTxt.textContent = m.txt; });
+    });
+  }
+  ['fRotA', 'fRotB', 'fRotNota'].forEach(function (id) { $(id).addEventListener('input', function () { aplicarRotulos(); sujo = true; }); });
   function definirModo(k, m) {
     var c = C[k]; c.modo = m;
     c.bloco.setAttribute('data-ver', m);
-    MODOS.forEach(function (x) { c.modos[x.k].setAttribute('aria-pressed', String(x.k === m)); if (x.k === m) c.modoTxt.textContent = x.txt; });
+    var ms = MODOS_DE(rotAtual());
+    ms.forEach(function (x) { c.modos[x.k].setAttribute('aria-pressed', String(x.k === m)); c.modos[x.k].textContent = x.rot; if (x.k === m) c.modoTxt.textContent = x.txt; });
     if (m === 'junto') c.cer.caixa.classList.remove('falta');        // campo escondido não fica marcado
     if (m === 'cerimonia') c.rec.caixa.classList.remove('falta');
   }
@@ -1916,6 +1536,8 @@
     crescerTodos();
     $('fCondicoes').value = d.condicoes || ''; $('fValidade').value = d.validade || ''; $('mDias').value = d.validade_dias || 30;
     $('fObs').value = d.observacoes || ''; $('fTipo').value = d.tipo || '';
+    var rr = limparRotulos(d.rotulos); $('fRotA').value = rr.pacote_a; $('fRotB').value = rr.pacote_b; $('fRotNota').value = rr.nota_b;
+    aplicarRotulos();
     $('sVideos').checked = s.videos !== false; $('sDepoimentos').checked = s.depoimentos !== false;
   }
 
@@ -1929,7 +1551,7 @@
         ver_cerimonia: c.modo !== 'junto', ver_recepcao: c.modo !== 'cerimonia' };
     });
     var d = {
-      cliente: $('fCliente').value.trim(), tipo: $('fTipo').value.trim(), data: $('fData').value, hora: $('fHora').value, local: $('fLocal').value.trim(),
+      cliente: $('fCliente').value.trim(), tipo: $('fTipo').value.trim(), rotulos: rotAtual(), data: $('fData').value, hora: $('fHora').value, local: $('fLocal').value.trim(),
       mensagem: $('fMensagem').value.trim(),
       opcoes: opcoes, ordem: ordemOps.slice(), sugestao: sugestao && opcoes[sugestao].on ? sugestao : '',
       inclui: $('fInclui').value.trim(),
@@ -2027,9 +1649,9 @@
     entrarEditor((p.dados && p.dados.cliente) || 'Proposta', 'Salvar alterações', 'proposta', false);
   }
 
-  // confere o que falta; o campo fica marcado e ganha foco (§8.1: nome do casal + pelo menos uma opção ligada com valor de cerimônia)
+  // confere o que falta; o campo fica marcado e ganha foco (nome do cliente + pelo menos uma opção ligada com um valor à mostra)
   function validar() {
-    if (!$('fCliente').value.trim()) { $('fCliente').classList.add('falta'); toast('Coloque o nome do casal'); focar($('fCliente')); return false; }
+    if (!$('fCliente').value.trim()) { $('fCliente').classList.add('falta'); toast('Coloque o nome do cliente'); focar($('fCliente')); return false; }
     var ligadas = ordemOps.filter(function (k) { return C[k].on.checked; });
     if (!ligadas.length) { toast('Ligue pelo menos uma opção'); C[ordemOps[0]].on.focus(); $('passoOpcoes').scrollIntoView({ block: 'start' }); return false; }
     // os campos de valor que aparecem em cada opção (junto: só cerimônia + recepção; só cerimônia: só a cerimônia)
@@ -2074,7 +1696,7 @@
   }
   $('btSalvar').addEventListener('click', salvar);
 
-  // duplicar = começar uma proposta nova com as mesmas escolhas (você só troca o casal)
+  // duplicar = começar uma proposta nova com as mesmas escolhas (você só troca o cliente)
   $('edDuplicar').addEventListener('click', function () {
     var d = lerForm(), solta = ocupado($('edDuplicar'));
     function copiar(m) {
@@ -2084,7 +1706,7 @@
       preencher(d); sujo = true;
       entrarEditor('Nova proposta (cópia)', 'Salvar e gerar link', 'proposta', false);
       $('fCliente').focus();
-      toast('Copiada — agora é só colocar o nome do casal');
+      toast('Copiada. Agora é só colocar o nome do cliente');
     }
     // a validade da cópia recomeça a contar de hoje, pelos dias do modelo
     carregarModelo().then(copiar, function (e) { if (e && e.message === '401') return solta(); copiar(null); });
@@ -2196,6 +1818,9 @@
   function abrirFechou(p) {
     fechando = p;
     var d = p.dados || {}, box = $('fxOpcoes');
+    // os botões de pacote mostram os nomes que esta proposta usa para os dois valores
+    var rp = limparRotulos(d.rotulos);
+    $('fxPacotes').querySelectorAll('button').forEach(function (b) { b.textContent = b.getAttribute('data-v') === 'cerimonia' ? rp.pacote_a : rp.pacote_b; });
     var f0 = etapaDe(p) === 'fechada' ? (p.fechamento || {}) : null;   // já fechada: editar o fechamento
     fx.editar = !!f0;
     $('fxTit').textContent = f0 ? 'Editar fechamento' : 'Fechou?';
@@ -2217,8 +1842,8 @@
     var quem = [d.cliente || 'Sem nome', d.data && dataCurta(d.data), d.hora && horaTxt(d.hora)].filter(Boolean).join(' · ');
     $('fxQuem').textContent = quem; $('nfQuem').textContent = quem;
     var ja = naData(d.data, p.id).fechadas;
-    $('fxConflito').textContent = ja.length >= POR_DIA ? 'Atenção: este dia já tem ' + ja.length + ' casamentos fechados (' + ja.join(', ') + ').'
-      : ja.length ? 'Este será o 2º casamento do dia (já tem ' + ja[0] + '). Confira os horários e o deslocamento.' : '';
+    $('fxConflito').textContent = ja.length >= POR_DIA ? 'Atenção: este dia já tem ' + ja.length + ' eventos fechados (' + ja.join(', ') + ').'
+      : ja.length ? 'Este será o 2º evento do dia (já tem ' + ja[0] + '). Confira os horários e o deslocamento.' : '';
     $('fxConflito').hidden = !ja.length;
     limparNo(box);
     ligadas.concat(['outro']).forEach(function (k) {
@@ -2263,7 +1888,7 @@
       solta();
       atualizarNaLista(np); fecharFolhas();
       if (!$('vEditor').hidden && editando && editando.id === np.id) { editando = np; pintarSituacao(); }
-      else if (!$('vLista').hidden && np.etapa === 'fechada') definirAba('clientes');   // o casal que fechou vira cliente
+      else if (!$('vLista').hidden && np.etapa === 'fechada') definirAba('clientes');   // quem fechou vira cliente
       desenharTudo();
       toast(msg);
     }, function (e) {
