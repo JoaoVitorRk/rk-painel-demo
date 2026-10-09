@@ -125,7 +125,7 @@ body.com-dica-modelo .sub-titulo { display: none; }
 .adapta { padding: 1px 0 1px 12px; border-left: 1px solid var(--dourado3); color: var(--tinta2); font-size: 0.88rem; line-height: 1.45; }
 
 /* ---------- abas ---------- */
-.abas { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; margin: 4px 0 22px; border-bottom: 1px solid var(--fio2); }
+.abas { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; margin: 4px 0 22px; border-bottom: 1px solid var(--fio2); }
 .abas button { min-height: 48px; border: 0; border-bottom: 1px solid transparent; margin-bottom: -1px; background: none; font-size: 11px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--tinta3); cursor: pointer; transition: color 200ms, border-color 200ms; }
 .abas button:hover { color: var(--tinta); }
 .abas button[aria-selected="true"] { color: var(--dourado3); border-bottom-color: var(--dourado3); }
@@ -141,7 +141,31 @@ body.com-dica-modelo .sub-titulo { display: none; }
 .numeros .livre b { color: var(--verde-txt); }
 .numeros .atraso b { color: var(--vermelho-txt); }
 .numeros .atraso.zero b { color: var(--tinta3); }
-@media (max-width: 419px) { .abas button { letter-spacing: 0.08em; font-size: 10.5px; } }
+/* no celular as 5 abas deslizam para o lado (a última aparece cortada: sinal de que tem mais) */
+@media (max-width: 519px) {
+  .abas { display: flex; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch;
+    -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 30px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 30px), transparent); }
+  .abas::-webkit-scrollbar { display: none; }
+  .abas button { flex: 1 0 auto; padding: 0 10px; letter-spacing: 0.1em; font-size: 10.5px; }
+}
+
+/* ---------- hoje: o dia e o mês de relance ---------- */
+.numeros.dois { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.lembrete { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 14px; align-items: center; padding: 14px 16px; border: 1px solid var(--fio); background: var(--branco); }
+.lembrete .q { min-width: 0; display: grid; gap: 3px; text-align: left; background: none; border: 0; padding: 0; color: inherit; cursor: pointer; }
+.lembrete .q b { font-weight: 500; font-size: 1rem; overflow-wrap: anywhere; }
+.lembrete .q span { font-size: 0.86rem; line-height: 1.35; color: var(--suave); }
+.lembrete .lado { display: grid; gap: 6px; }
+.lembrete .lado .b { min-height: 44px; padding: 8px 14px; }
+.comparar { display: grid; padding: 4px 16px; border: 1px solid var(--fio); background: var(--branco); }
+.comp-linha { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px; align-items: baseline; padding: 11px 0; border-bottom: 1px solid var(--fio); }
+.comp-linha:last-child { border-bottom: 0; }
+.comp-linha .rot { font-size: 0.95rem; }
+.comp-linha b { font-family: var(--display); font-weight: 300; font-size: 1.1rem; color: var(--dourado3); white-space: nowrap; font-variant-numeric: lining-nums tabular-nums; }
+.comp-linha .det { grid-column: 1 / -1; font-size: 0.8rem; line-height: 1.45; color: var(--suave); }
+.comp-linha .dl.sobe { color: var(--verde-txt); }
+.comp-linha .dl.desce { color: var(--vermelho-txt); }
+.secao.mes-tit { margin-top: 34px; }
 
 /* ---------- financeiro: sinal, restante, a receber ---------- */
 .pagtos { display: grid; gap: 10px; }
