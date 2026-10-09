@@ -125,8 +125,8 @@ body.com-dica-modelo .sub-titulo { display: none; }
 .adapta { padding: 1px 0 1px 12px; border-left: 1px solid var(--dourado3); color: var(--tinta2); font-size: 0.88rem; line-height: 1.45; }
 
 /* ---------- abas ---------- */
-.abas { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; margin: 4px 0 22px; border-bottom: 1px solid var(--fio2); }
-.abas button { min-height: 48px; border: 0; border-bottom: 1px solid transparent; margin-bottom: -1px; background: none; font-size: 11px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--tinta3); cursor: pointer; transition: color 200ms, border-color 200ms; }
+.abas { display: flex; gap: 0; margin: 4px 0 22px; border-bottom: 1px solid var(--fio2); }
+.abas button { flex: 1 1 auto; padding: 0 4px; min-height: 48px; border: 0; border-bottom: 1px solid transparent; margin-bottom: -1px; background: none; font-size: 11px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--tinta3); cursor: pointer; transition: color 200ms, border-color 200ms; }
 .abas button:hover { color: var(--tinta); }
 .abas button[aria-selected="true"] { color: var(--dourado3); border-bottom-color: var(--dourado3); }
 
@@ -141,7 +141,7 @@ body.com-dica-modelo .sub-titulo { display: none; }
 .numeros .livre b { color: var(--verde-txt); }
 .numeros .atraso b { color: var(--vermelho-txt); }
 .numeros .atraso.zero b { color: var(--tinta3); }
-/* no celular as 5 abas deslizam para o lado (a última aparece cortada: sinal de que tem mais) */
+/* no celular as 6 abas deslizam para o lado (a última aparece cortada: sinal de que tem mais) */
 @media (max-width: 519px) {
   .abas { display: flex; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch;
     -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 30px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 30px), transparent); }
@@ -166,6 +166,18 @@ body.com-dica-modelo .sub-titulo { display: none; }
 .comp-linha .dl.sobe { color: var(--verde-txt); }
 .comp-linha .dl.desce { color: var(--vermelho-txt); }
 .secao.mes-tit { margin-top: 34px; }
+
+/* ---------- contatos: quem pediu preço ---------- */
+.lembrete.sem-lado { grid-template-columns: minmax(0, 1fr); }
+.lembrete .q span.atraso { color: var(--vermelho-txt); }
+.linha-mes.larga { grid-template-columns: minmax(0, 8.5rem) minmax(0, 1fr) auto; }
+.linha-mes.larga .m { font-family: var(--sans); font-size: 0.9rem; overflow-wrap: anywhere; }
+.motivos-rel { margin-bottom: 18px; }
+.motivos-rel .secao { margin-top: 4px; }
+.envio .texto-link { justify-self: center; font-size: 0.86rem; letter-spacing: 0.02em; text-transform: none; text-align: center; overflow-wrap: anywhere; }
+.ct-acoes { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+@media (max-width: 339px) { .ct-acoes { grid-template-columns: minmax(0, 1fr); } }
+.folha .msg-whats { padding: 14px 16px; background: var(--marfim); border: 1px solid var(--fio); border-left: 1px solid var(--dourado3); color: var(--tinta); font-size: 0.95rem; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; }
 
 /* ---------- financeiro: sinal, restante, a receber ---------- */
 .pagtos { display: grid; gap: 10px; }

@@ -75,6 +75,7 @@
   <nav class="abas" id="abas" role="tablist" aria-label="Partes do painel">
     <button type="button" role="tab" data-aba="hoje" aria-selected="true">Hoje</button>
     <button type="button" role="tab" data-aba="agenda" aria-selected="false">Agenda</button>
+    <button type="button" role="tab" data-aba="contatos" aria-selected="false">Contatos</button>
     <button type="button" role="tab" data-aba="propostas" aria-selected="false">Propostas</button>
     <button type="button" role="tab" data-aba="clientes" aria-selected="false">Clientes</button>
     <button type="button" role="tab" data-aba="financeiro" aria-selected="false">Financeiro</button>
@@ -130,6 +131,23 @@
     <div class="mes-lista" id="mesLista"></div>
     <div class="secao">Próximos meses <small>toque num mês para ver</small></div>
     <div class="meses" id="meses"></div>
+  </div>
+
+  <!-- CONTATOS: quem pediu preço -->
+  <div id="abaContatos" role="tabpanel" hidden>
+    <h2 class="titulo">Seus contatos</h2>
+    <p class="sub-titulo">Quem pediu preço, de onde veio e quando chamar de volta.</p>
+    <div class="dica-visitante" data-dica="contatos" hidden>
+      <p>Anote quem pediu preço e de onde veio. O painel lembra o dia de chamar de volta e mostra de onde vêm os clientes que fecham. O botão WhatsApp abre o seu WhatsApp com a mensagem escrita: você só aperta enviar.</p>
+      <button class="dica-fechar" type="button" aria-label="Fechar a dica">×</button>
+    </div>
+    <button class="b b-ouro b-cheio" type="button" id="btNovoContato">+ Novo contato</button>
+    <div class="numeros" role="group" aria-label="Contatos de relance">
+      <div><b id="ctChamar">–</b><span>Para chamar hoje</span></div>
+      <div><b id="ctSemProposta">–</b><span>Sem proposta</span></div>
+      <div class="total"><b id="ctFecharam">–</b><span>Fecharam</span></div>
+    </div>
+    <div id="contatos"></div>
   </div>
 
   <!-- PROPOSTAS: a negociação -->
@@ -218,9 +236,11 @@
   </div>
 
   <div class="envio" id="edEnvio" hidden>
-    <button class="b b-ouro" type="button" data-acao="copiar">Copiar link</button>
+    <a class="b b-ouro largo" id="edWhats" href="#" target="_blank" rel="noopener">Enviar no WhatsApp</a>
+    <button class="b" type="button" data-acao="copiar">Copiar link</button>
     <a class="b" id="edVer" href="#" target="_blank" rel="noopener">Ver proposta</a>
     <button class="b b-verde largo" type="button" id="edFechou">Fechou?</button>
+    <button class="texto-link largo" type="button" id="edContato"></button>
   </div>
 
   <form id="fEd" autocomplete="off" novalidate>
@@ -307,9 +327,10 @@
       <p>Um passeio rápido. Mexa à vontade: nada aqui é salvo nem publicado.</p>
       <ol class="passos">
         <li><span class="n" aria-hidden="true">1</span><div class="t"><b>Hoje e Agenda</b><span>Ao abrir, o dia de relance (eventos da semana, pagamentos, quem chamar) e o mês em números; na Agenda, o calendário do mês.</span></div></li>
-        <li><span class="n" aria-hidden="true">2</span><div class="t"><b>Propostas</b><span>Crie a proposta de um cliente em 1 minuto e mande o link pelo WhatsApp; veja quando ele abriu.</span></div></li>
-        <li><span class="n" aria-hidden="true">3</span><div class="t"><b>Fechou?</b><span>Marque o que fechou (com adicionais, sinal e restante) e quem fechou vira cliente; o faturamento e o que falta receber se somam sozinhos.</span></div></li>
-        <li><span class="n" aria-hidden="true">4</span><div class="t"><b>Sua proposta padrão</b><span>Monte uma vez suas opções, valores e adicionais; toda proposta nova começa dela.</span></div></li>
+        <li><span class="n" aria-hidden="true">2</span><div class="t"><b>Contatos</b><span>Anote quem pediu preço e de onde veio; o painel lembra o dia de chamar de volta e mostra de onde vêm os clientes que fecham.</span></div></li>
+        <li><span class="n" aria-hidden="true">3</span><div class="t"><b>Propostas</b><span>Crie a proposta de um cliente em 1 minuto. O botão WhatsApp abre o seu WhatsApp com a mensagem e o link escritos: você só aperta enviar. E veja quando o cliente abriu.</span></div></li>
+        <li><span class="n" aria-hidden="true">4</span><div class="t"><b>Fechou?</b><span>Marque o que fechou (com adicionais, sinal e restante) e quem fechou vira cliente; o faturamento e o que falta receber se somam sozinhos.</span></div></li>
+        <li><span class="n" aria-hidden="true">5</span><div class="t"><b>Sua proposta padrão</b><span>Monte uma vez suas opções, valores e adicionais; toda proposta nova começa dela.</span></div></li>
       </ol>
       <p class="fecho">Tudo aqui é exemplo. Na sua versão, o painel e a página da proposta são feitos com a paleta do seu site, e todo o sistema é entregue personalizado para o seu negócio: as suas opções, valores, fotos, vídeos e depoimentos.</p>
     </div>
@@ -325,10 +346,11 @@
 <div class="folha-fundo" id="folhaPronta" hidden>
   <div class="folha" role="dialog" aria-modal="true" aria-labelledby="prontaTit" tabindex="-1">
     <h3 id="prontaTit">Proposta pronta</h3>
-    <p>Copie o link e mande para o cliente na conversa do WhatsApp:</p>
+    <p>Mande para o cliente: o botão abre o seu WhatsApp já com a mensagem e o link. Se preferir, copie o link.</p>
     <code id="prontaLink"></code>
     <p class="nota-visitante so-visitante" id="prontaAvisoVisitante">No modo visitante, este link só abre neste aparelho. Na sua versão, ele vai para o cliente pelo WhatsApp.</p>
-    <button class="b b-ouro b-cheio" type="button" data-acao="copiar">Copiar link</button>
+    <a class="b b-ouro b-cheio" id="prontaWhats" href="#" target="_blank" rel="noopener">Enviar no WhatsApp</a>
+    <button class="b b-cheio" type="button" data-acao="copiar">Copiar link</button>
     <a class="b b-cheio" id="prontaVer" href="#" target="_blank" rel="noopener">Ver proposta</a>
     <div class="pe centro"><button class="texto-link" type="button" id="prontaVoltar">Voltar para as propostas</button></div>
   </div>
@@ -412,6 +434,50 @@
   </div>
 </div>
 
+<!-- CONTATO -->
+<div class="folha-fundo" id="folhaContato" hidden>
+  <div class="folha" role="dialog" aria-modal="true" aria-labelledby="ctTit" tabindex="-1">
+    <div class="parte">
+      <h3 id="ctTit">Novo contato</h3>
+      <label class="campo"><span>Nome</span><input type="text" id="ctNome" maxlength="120" placeholder="Ana &amp; João, Formatura Medicina…" autocapitalize="words" enterkeyhint="next"></label>
+      <label class="campo"><span>WhatsApp <small>(com DDD)</small></span><input type="tel" id="ctWhats" inputmode="tel" maxlength="20" placeholder="(11) 99999-0000" enterkeyhint="next"></label>
+      <div class="campo"><span id="ctRotOrigem">De onde veio</span><div class="escolhas" id="ctOrigens" role="group" aria-labelledby="ctRotOrigem"></div></div>
+      <label class="campo"><span>Data do evento <small>(se já souber)</small></span><input type="date" id="ctData"></label>
+      <div class="campo"><span id="ctRotLemb">Lembrar de chamar</span>
+        <div class="motivos" id="ctAtalhos" role="group" aria-labelledby="ctRotLemb"></div>
+        <div class="duas quebra-p">
+          <label class="campo"><span>Dia</span><input type="date" id="ctLembEm"></label>
+          <label class="campo"><span>O que lembrar</span><input type="text" id="ctLembTxt" maxlength="140" placeholder="Mandar a proposta" enterkeyhint="done"></label>
+        </div>
+      </div>
+      <label class="campo"><span>Anotações <small>(opcional)</small></span><textarea id="ctObs" maxlength="500" rows="3" placeholder="Ex.: festa ao ar livre, quer imagens de drone"></textarea></label>
+      <div class="aviso" id="ctErro" role="alert" hidden></div>
+      <button class="b b-ouro b-cheio" type="button" id="ctSalvar">Salvar contato</button>
+      <div class="ct-acoes" id="ctAcoes" hidden>
+        <a class="b" id="ctWhatsBt" href="#" target="_blank" rel="noopener">Chamar no WhatsApp</a>
+        <button class="b" type="button" id="ctProposta">Fazer proposta</button>
+      </div>
+      <div class="pe">
+        <button class="texto-link perigo" type="button" id="ctExcluir" hidden>Excluir contato</button>
+        <button class="texto-link" type="button" data-cancelar>Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MENSAGEM DO WHATSAPP (modo visitante: mostra a mensagem em vez de abrir a conversa de um número fictício) -->
+<div class="folha-fundo" id="folhaWhats" hidden>
+  <div class="folha" role="dialog" aria-modal="true" aria-labelledby="wzTit" tabindex="-1">
+    <h3 id="wzTit">Mensagem pronta</h3>
+    <p class="quem" id="wzPara"></p>
+    <div class="msg-whats" id="wzMsg"></div>
+    <p id="wzExplica"></p>
+    <a class="b b-ouro b-cheio" id="wzTestar" href="#" target="_blank" rel="noopener">Testar no meu WhatsApp</a>
+    <p class="nota-visitante">O teste abre o seu WhatsApp com a mensagem e sem destinatário: você escolhe para quem mandar (pode ser você mesmo).</p>
+    <div class="pe centro"><button class="texto-link" type="button" data-cancelar>Fechar</button></div>
+  </div>
+</div>
+
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
@@ -436,6 +502,8 @@
     RESTANTE_DIAS_ANTES: 5,                    // o restante vence tantos dias antes do evento
     DIAS_SEM_RESPOSTA: 3,                      // abriu a proposta há tantos dias e não respondeu: hora de chamar
     NOME_SAUDACAO: '',                         // "Bom dia, <nome>" na aba Hoje (vazio na demonstração)
+    ASSINATURA_WHATS: 'Aqui é do Aurora Studio.',   // fim da mensagem para um contato ainda sem proposta
+    ROTULO_PORTAL: 'Portal de eventos',        // como aparece a origem "portal" (site de anúncios do ramo do cliente)
     WHATSAPP_RK: '5542999246208',
     SITE_RK: 'https://rkperformance.com.br',
     TEXTOS: {
@@ -481,6 +549,7 @@
   var MOTIVOS = ['Fechou com outro fornecedor', 'Achou o valor alto', 'Mudou os planos', 'Não respondeu mais'];
   var $ = function (id) { return document.getElementById(id); };
 
+  var contatos = [], vincularContato = null, contatoEd = null, ctOrigem = '', ctPropostaId = null;   // contatos
   var propostas = [], filtro = 'abertas', pedido = 0, ultimaCarga = 0, carregada = false;   // lista
   var aba = 'hoje', mesVisto = null, diaSel = '', dmMes = null;                                       // abas e agenda
   var SINAL_PCT = CONFIG.SINAL_PCT, RESTANTE_DIAS_ANTES = CONFIG.RESTANTE_DIAS_ANTES, DIAS_SEM_RESPOSTA = CONFIG.DIAS_SEM_RESPOSTA;
@@ -499,7 +568,8 @@
     Sandbox.apagar();                      // o que o visitante mexeu some junto com a sessão
     dicasFechadas = []; try { localStorage.removeItem(CONFIG.CHAVE_DICAS); } catch (e) {}
     sujo = false; propostas = []; carregada = false; modelo = null; editando = null; aba = 'hoje'; mesVisto = null; diaSel = ''; dmMes = null; cli = { base: 'evento', periodo: 'tudo', de: '', ate: '' };
-    ['rFechadas', 'rMedio', 'rTotal', 'mCasamentos', 'mLivres', 'mAguardando', 'fReceber', 'fAtrasado', 'fRecebidoMes', 'hjEventos', 'hjReceber', 'hjChamar'].forEach(function (id) { $(id).textContent = '–'; });
+    contatos = []; vincularContato = null; contatoEd = null;
+    ['rFechadas', 'rMedio', 'rTotal', 'mCasamentos', 'mLivres', 'mAguardando', 'fReceber', 'fAtrasado', 'fRecebidoMes', 'hjEventos', 'hjReceber', 'hjChamar', 'ctChamar', 'ctSemProposta', 'ctFecharam'].forEach(function (id) { $(id).textContent = '–'; });
     fecharFolhas(); semToast(); toastDepois = '';
     pintarPapel();
     mostrar('vLogin');
@@ -528,9 +598,9 @@
   }
 
   // ---------- modo visitante: a API simulada no navegador ----------
-  // Guarda { v, criado_em, propostas, modelo, removidos } em localStorage[CONFIG.CHAVE_SANDBOX].
+  // Guarda { v, criado_em, propostas, modelo, contatos, removidos } em localStorage[CONFIG.CHAVE_SANDBOX].
   // Mesmas respostas, regras e mensagens de erro da API (limpar, validarPublicacao, etapa, duplicar,
-  // excluir, link). A página da proposta lê o mesmo lugar para abrir, neste aparelho, o que o visitante fez.
+  // excluir, link, contatos). A página da proposta lê o mesmo lugar para abrir, neste aparelho, o que o visitante fez.
   var Sandbox = (function () {
     var mem = null, hidratando = null, geracao = 0;
     var VALIDADE_MS = CONFIG.SANDBOX_HORAS * 3600 * 1000;
@@ -539,7 +609,7 @@
 
     function copia(x) { return x == null ? x : JSON.parse(JSON.stringify(x)); }
     function valido(s) {
-      return !!(s && s.v === 1 && Array.isArray(s.propostas) && s.modelo && typeof s.modelo === 'object' &&
+      return !!(s && s.v === 1 && Array.isArray(s.propostas) && s.modelo && typeof s.modelo === 'object' && Array.isArray(s.contatos) &&
         Date.now() - Date.parse(s.criado_em) < VALIDADE_MS);
     }
     function ler() {
@@ -559,9 +629,10 @@
       if (hidratando) return hidratando;
       var g = geracao, venceu = false;
       try { venceu = !!localStorage.getItem(CONFIG.CHAVE_SANDBOX); } catch (e) {}   // havia um, mas passou do prazo
-      hidratando = Promise.all([rede('GET', '/admin/propostas'), rede('GET', '/admin/modelo')]).then(function (r) {
+      hidratando = Promise.all([rede('GET', '/admin/propostas'), rede('GET', '/admin/modelo'), rede('GET', '/admin/contatos')]).then(function (r) {
         if (g !== geracao) return hidratar();   // "Recomeçar" no meio da carga: vale a carga nova
-        mem = { v: 1, criado_em: new Date().toISOString(), propostas: Array.isArray(r[0]) ? r[0] : [], modelo: r[1] && typeof r[1] === 'object' ? r[1] : {}, removidos: [] };
+        mem = { v: 1, criado_em: new Date().toISOString(), propostas: Array.isArray(r[0]) ? r[0] : [], modelo: r[1] && typeof r[1] === 'object' ? r[1] : {},
+          contatos: Array.isArray(r[2]) ? r[2] : [], removidos: [] };
         gravar(); hidratando = null;
         if (venceu) toast('Passaram algumas horas: os exemplos voltaram ao início');
         return mem;
@@ -705,7 +776,47 @@
         var slug = s.propostas[i].slug;
         s.propostas.splice(i, 1);
         if (s.removidos.indexOf(slug) < 0) s.removidos.push(slug);   // a página passa a dizer "indisponível"
+        s.contatos.forEach(function (c) { if (c.proposta_id === id) c.proposta_id = null; });   // o contato fica, sem o vínculo
       }
+      return { ok: true };
+    }
+    // ----- contatos: as mesmas regras da API (limparContato, salvarContato, excluirContato) -----
+    var ORIGENS_CONTATO = ['instagram', 'portal', 'indicacao', 'google', 'whatsapp', 'outro'];
+    function limparWhatsapp(v) {
+      var d = (typeof v === 'string' ? v : '').replace(/\D/g, '');
+      if ((d.length === 12 || d.length === 13) && d.indexOf('55') === 0) d = d.slice(2);
+      if (!d) return '';
+      if (d.length !== 10 && d.length !== 11) throw erro('WhatsApp inválido: coloque com DDD, só os números.');
+      return d;
+    }
+    function limparContato(s, d) {
+      if (!d || typeof d !== 'object' || Array.isArray(d)) throw erro('Dados inválidos.');
+      var nome = TXT(typeof d.nome === 'string' ? d.nome.trim() : '', 120).trim();
+      if (!nome) throw erro('Coloque o nome.');
+      var pid = typeof d.proposta_id === 'string' && /^[a-f0-9-]{36}$/.test(d.proposta_id) ? d.proposta_id : null;
+      if (pid && !s.propostas.some(function (p) { return p.id === pid; })) pid = null;
+      return {
+        nome: nome, whatsapp: limparWhatsapp(d.whatsapp), origem: ORIGENS_CONTATO.indexOf(d.origem) >= 0 ? d.origem : '',
+        data_evento: DATA(d.data_evento) || null, obs: TXT(d.obs, 500), lembrete_em: DATA(d.lembrete_em) || null,
+        lembrete_txt: TXT(d.lembrete_txt, 140), proposta_id: pid
+      };
+    }
+    function salvarContato(s, id, corpo) {
+      var c = limparContato(s, corpo), t = agora();
+      if (!id) {
+        var novo = { id: uuid(), nome: c.nome, whatsapp: c.whatsapp, origem: c.origem, data_evento: c.data_evento, obs: c.obs,
+          lembrete_em: c.lembrete_em, lembrete_txt: c.lembrete_txt, proposta_id: c.proposta_id, criado_em: t, atualizado_em: t };
+        s.contatos.unshift(novo);
+        return novo;
+      }
+      var atual = s.contatos.filter(function (x) { return x.id === id; })[0];
+      if (!atual) throw erro('Contato não encontrado.');
+      Object.keys(c).forEach(function (k) { atual[k] = c[k]; });
+      atual.atualizado_em = t;
+      return atual;
+    }
+    function excluirContato(s, id) {
+      s.contatos = s.contatos.filter(function (x) { return x.id !== id; });
       return { ok: true };
     }
     // a cópia nasce como proposta nova: rascunho, em aberto, sem fechamento e com validade nova
@@ -790,6 +901,14 @@
         if (metodo === 'PUT') { s.modelo = limparModelo(OBJ(corpo).dados); return s.modelo; }
       }
       if (metodo === 'GET' && c === '/admin/resumo') return resumo(s);
+      if (c === '/admin/contatos') {
+        if (metodo === 'GET') return s.contatos.slice().sort(function (a, b) { return String(b.criado_em).localeCompare(String(a.criado_em)); });
+        if (metodo === 'POST') return salvarContato(s, null, corpo);
+      }
+      if ((r = c.match(/^\/admin\/contatos\/([a-f0-9-]{36})$/))) {
+        if (metodo === 'PUT') return salvarContato(s, r[1], corpo);
+        if (metodo === 'DELETE') return excluirContato(s, r[1]);
+      }
       throw erro('Não deu certo agora. Tente de novo daqui a pouco.');   // rota que a API não tem
     }
     function chamar(metodo, caminho, corpo) {
@@ -980,18 +1099,18 @@
     if (!confirm('Recomeçar do zero?\n\nO que você mexeu some e os exemplos voltam ao início.')) return;
     Sandbox.apagar();
     sujo = false; fecharFolhas(); semToast(); toastDepois = '';
-    propostas = []; carregada = false; modelo = null; editando = null; fechando = null;
+    propostas = []; contatos = []; vincularContato = null; contatoEd = null; carregada = false; modelo = null; editando = null; fechando = null;
     aba = 'hoje'; filtro = 'abertas'; mesVisto = null; diaSel = ''; dmMes = null; cli = { base: 'evento', periodo: 'tudo', de: '', ate: '' };
     if (history.state && history.state.tela === 'editor') { try { history.replaceState(null, ''); } catch (e) {} }
     abrirLista().then(function () { if (carregada) toast('Pronto: os exemplos voltaram ao início'); });
   });
 
   // ---------- abas: agenda · propostas · clientes ----------
-  var ABAS = ['hoje', 'agenda', 'propostas', 'clientes', 'financeiro'];
+  var ABAS = ['hoje', 'agenda', 'contatos', 'propostas', 'clientes', 'financeiro'];
   function definirAba(a, semRolar) {
     aba = ABAS.indexOf(a) >= 0 ? a : 'hoje';
     document.querySelectorAll('#abas [data-aba]').forEach(function (b) { b.setAttribute('aria-selected', String(b.getAttribute('data-aba') === aba)); });
-    $('abaHoje').hidden = aba !== 'hoje'; $('abaAgenda').hidden = aba !== 'agenda';
+    $('abaHoje').hidden = aba !== 'hoje'; $('abaAgenda').hidden = aba !== 'agenda'; $('abaContatos').hidden = aba !== 'contatos';
     var nav = $('abas'), ativa = nav.querySelector('[aria-selected="true"]'); if (ativa && nav.scrollWidth > nav.clientWidth) nav.scrollLeft += ativa.getBoundingClientRect().left - nav.getBoundingClientRect().left - (nav.clientWidth - ativa.offsetWidth) / 2;   // no celular as abas deslizam: centraliza a ativa sem rolar a página
     $('abaPropostas').hidden = aba !== 'propostas'; $('abaClientes').hidden = aba !== 'clientes'; $('abaFinanceiro').hidden = aba !== 'financeiro';
     if (!semRolar) window.scrollTo(0, 0);
@@ -1017,8 +1136,10 @@
   }
   function carregarLista() {
     var meu = ++pedido;
-    return api('GET', '/admin/propostas').then(function (r) {
+    var cts = api('GET', '/admin/contatos').catch(function (e) { if (e && e.message === '401') throw e; return null; });   // sem contatos, o resto funciona
+    return Promise.all([api('GET', '/admin/propostas'), cts]).then(function (rs) {
       if (meu !== pedido) return;
+      var r = rs[0]; if (Array.isArray(rs[1])) contatos = rs[1];
       propostas = Array.isArray(r) ? r : []; ultimaCarga = Date.now(); carregada = true;
       desenharTudo();
     }).catch(function (e) {
@@ -1029,7 +1150,7 @@
       limparNo($('lista')); $('lista').appendChild(v);
     });
   }
-  function desenharTudo() { desenharResumo(); desenharLista(); desenharClientes(); desenharAgenda(); desenharFinanceiro(); desenharHoje(); }
+  function desenharTudo() { desenharResumo(); desenharLista(); desenharClientes(); desenharAgenda(); desenharFinanceiro(); desenharContatos(); desenharHoje(); }
 
   // ---------- datas ----------
   var DIAS = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'];
@@ -1317,7 +1438,7 @@
   // ---------- hoje: o dia e o mês de relance ----------
   function diaLocal(isoHora) { var d = new Date(isoHora || ''); return isNaN(d.getTime()) ? '' : isoLocal(d); }
   function diasDesde(iso) { var d = dataDe(iso); return d ? Math.round((dataDe(hojeISO()) - d) / 864e5) : 0; }
-  function linhaLembrete(p, texto) {
+  function linhaLembrete(p, texto, msg) {
     var d = p.dados || {}, r = el('article', 'lembrete');
     var q = botao('q'); q.title = 'Abrir a proposta'; q.onclick = function () { abrirEditor(p); };
     q.appendChild(el('b', null, d.cliente || 'Sem nome'));
@@ -1325,7 +1446,7 @@
     var sub = [d.data && dataCurta(d.data), faixa(d)].filter(Boolean).join(' · '); if (sub) q.appendChild(el('span', null, sub));
     r.appendChild(q);
     var lado = el('div', 'lado');
-    var bCp = botao('b b-pq b-ouro', 'Copiar link'); bCp.onclick = function () { copiarLink(p); }; lado.appendChild(bCp);
+    var ce = contatoDe(p), w = el('a', 'b b-pq b-ouro', 'WhatsApp'); whatsLink(w, ce && ce.whatsapp, msg, ce ? ce.nome : d.cliente); lado.appendChild(w);
     var bF = botao('b b-pq b-verde', 'Fechou?'); bF.onclick = function () { abrirFechou(p); }; lado.appendChild(bF);
     r.appendChild(lado);
     return r;
@@ -1347,7 +1468,8 @@
     var naoAbriram = abertas.filter(function (p) { return !p.views; }).sort(function (a, b) { return String(a.criado_em).localeCompare(String(b.criado_em)); });
     $('hjEventos').textContent = semana.length; $('hjEventosRot').textContent = semana.length === 1 ? 'Evento em 7 dias' : 'Eventos em 7 dias';
     $('hjReceber').textContent = dinheiro(pags.reduce(function (a, x) { return somaDinheiro(a, x.pg.valor); }, 0));
-    $('hjChamar').textContent = chamar.length + naoAbriram.length;
+    var lembretes = contatos.filter(function (c) { return c.lembrete_em && c.lembrete_em <= hoje; }).sort(function (a, b) { return a.lembrete_em.localeCompare(b.lembrete_em); });
+    $('hjChamar').textContent = chamar.length + naoAbriram.length + lembretes.length;
     ajustarTotal();
     box.appendChild(secao('Próximos 7 dias', semana.length ? semana.length + (semana.length === 1 ? ' evento' : ' eventos') : ''));
     if (semana.length) { var g = el('div', 'mes-lista'); semana.forEach(function (p) { g.appendChild(linhaEvento(p)); }); box.appendChild(g); }
@@ -1355,16 +1477,19 @@
     box.appendChild(secao('Pagamentos da semana', pags.length ? pags.length + (pags.length === 1 ? ' pagamento' : ' pagamentos') : ''));
     if (pags.length) { var gp = el('div', 'pagtos'); pags.forEach(function (x) { gp.appendChild(linhaPagto(x, hoje)); }); box.appendChild(gp); }
     else box.appendChild(el('p', 'nada', 'Nenhum pagamento vence nesta semana.'));
+    box.appendChild(secao('Lembretes', lembretes.length ? lembretes.length + (lembretes.length === 1 ? ' contato' : ' contatos') : ''));
+    if (lembretes.length) { var gl = el('div', 'pagtos'); lembretes.forEach(function (c) { gl.appendChild(linhaContato(c, opcoesLembrete(c, hoje))); }); box.appendChild(gl); }
+    else box.appendChild(el('p', 'nada', 'Nenhum lembrete para hoje.'));
     box.appendChild(secao('Hora de chamar', 'abriram há ' + DIAS_SEM_RESPOSTA + ' dias ou mais e não responderam'));
     if (chamar.length) {
       var gc = el('div', 'pagtos');
-      chamar.forEach(function (p) { var n = diasDesde(diaLocal(p.primeira_vista)); gc.appendChild(linhaLembrete(p, 'Abriu há ' + n + ' dias · ' + p.views + (p.views === 1 ? ' abertura' : ' aberturas') + (p.ultima_vista ? ' · última ' + quando(p.ultima_vista) : ''))); });
+      chamar.forEach(function (p) { var n = diasDesde(diaLocal(p.primeira_vista)); gc.appendChild(linhaLembrete(p, 'Abriu há ' + n + ' dias · ' + p.views + (p.views === 1 ? ' abertura' : ' aberturas') + (p.ultima_vista ? ' · última ' + quando(p.ultima_vista) : ''), mensagemRetorno(p))); });
       box.appendChild(gc);
     } else box.appendChild(el('p', 'nada', 'Ninguém esperando resposta há ' + DIAS_SEM_RESPOSTA + ' dias ou mais.'));
     box.appendChild(secao('Ainda não abriram', naoAbriram.length ? naoAbriram.length + (naoAbriram.length === 1 ? ' proposta' : ' propostas') : ''));
     if (naoAbriram.length) {
       var gn = el('div', 'pagtos');
-      naoAbriram.forEach(function (p) { var n = diasDesde(diaLocal(p.criado_em)); gn.appendChild(linhaLembrete(p, n <= 0 ? 'Criada hoje' : 'Criada há ' + n + (n === 1 ? ' dia' : ' dias'))); });
+      naoAbriram.forEach(function (p) { var n = diasDesde(diaLocal(p.criado_em)); gn.appendChild(linhaLembrete(p, n <= 0 ? 'Criada hoje' : 'Criada há ' + n + (n === 1 ? ' dia' : ' dias'), mensagemProposta(p))); });
       box.appendChild(gn);
     } else box.appendChild(el('p', 'nada', 'Todas as propostas publicadas já foram abertas pelo cliente.'));
     desenharMes();
@@ -1434,6 +1559,210 @@
   $('dmAnt').addEventListener('click', function () { var d = new Date(dmMes.y, dmMes.m - 1, 1); dmMes = { y: d.getFullYear(), m: d.getMonth() }; desenharMes(); });
   $('dmProx').addEventListener('click', function () { var d = new Date(dmMes.y, dmMes.m + 1, 1); dmMes = { y: d.getFullYear(), m: d.getMonth() }; desenharMes(); });
   $('dmHoje').addEventListener('click', function () { dmMes = mesAtual(); desenharMes(); });
+
+  // ---------- contatos: quem pediu preço, de onde veio e quando chamar ----------
+  var ORIGENS = [['instagram', 'Instagram'], ['portal', CONFIG.ROTULO_PORTAL], ['indicacao', 'Indicação'], ['google', 'Google'], ['whatsapp', 'WhatsApp'], ['outro', 'Outro']];
+  function nomeOrigem(k) { var o = ORIGENS.filter(function (x) { return x[0] === k; })[0]; return o ? o[1] : ''; }
+  function atualizarContato(c) { var i = contatos.findIndex(function (x) { return x.id === c.id; }); if (i >= 0) contatos[i] = c; else contatos.unshift(c); }
+  function propostaDoContato(c) { return c && c.proposta_id ? propostas.filter(function (p) { return p.id === c.proposta_id; })[0] || null : null; }
+  function contatoDe(p) { return p && p.id ? contatos.filter(function (c) { return c.proposta_id === p.id; })[0] || null : null; }
+  function mascaraWhats(d) {
+    d = String(d || '');
+    if (d.length === 11) return '(' + d.slice(0, 2) + ') ' + d.slice(2, 7) + '-' + d.slice(7);
+    if (d.length === 10) return '(' + d.slice(0, 2) + ') ' + d.slice(2, 6) + '-' + d.slice(6);
+    return d;
+  }
+  // O botão abre o WhatsApp do próprio dono do painel com a mensagem escrita (com o número: direto na conversa;
+  // sem: ele escolhe o contato). Não há conexão nem API do WhatsApp: nada é enviado sozinho, ele aperta enviar.
+  function linkWhats(num, msg) { return 'https://wa.me/' + (num ? '55' + num : '') + '?text=' + encodeURIComponent(msg); }
+  // No modo visitante os números são fictícios: o clique abre a folha "Mensagem pronta" (ver o ouvinte abaixo).
+  function whatsLink(a, num, msg, nome) {
+    a.href = linkWhats(num, msg); a.target = '_blank'; a.rel = 'noopener';
+    a.setAttribute('data-whats', num ? '1' : '0'); a.setAttribute('data-msg', msg); a.setAttribute('data-nome', nome || '');
+  }
+  document.addEventListener('click', function (e) {
+    var a = e.target && e.target.closest ? e.target.closest('a[data-whats]') : null;
+    if (!a || !ehVisitante()) return;
+    e.preventDefault();
+    abrirWhatsDemo(a.getAttribute('data-msg') || '', a.getAttribute('data-nome') || '', a.getAttribute('data-whats') === '1');
+  });
+  function abrirWhatsDemo(msg, nome, temNumero) {
+    var n = nomeCurto(nome);
+    $('wzPara').textContent = temNumero ? 'Para: ' + (nome || 'o cliente') : 'Sem WhatsApp anotado: você escolhe para quem mandar';
+    $('wzMsg').textContent = msg;
+    $('wzExplica').textContent = temNumero
+      ? 'No seu painel, este botão abre o WhatsApp do seu celular já na conversa com ' + (n || 'o cliente') + ', com esta mensagem escrita. Você confere e aperta enviar. Nada sai sozinho e não precisa conectar nada.'
+      : 'No seu painel, este botão abre o WhatsApp do seu celular com esta mensagem escrita, e você escolhe a conversa. Nada sai sozinho e não precisa conectar nada.';
+    $('wzTestar').href = linkWhats('', msg);
+    FOLHAS.forEach(function (id) { $(id).hidden = true; });
+    abrirFolha('folhaWhats');
+  }
+  // "Marina & Rafael" → "Marina e Rafael" · "Helena · 15 anos" → "Helena" · "Bodas de prata · Lúcia & Antônio" → "Lúcia e Antônio"
+  function nomeCurto(n) {
+    var partes = String(n || '').split('·').map(function (x) { return x.trim(); }).filter(Boolean);
+    var p = partes.filter(function (x) { return x.indexOf('&') >= 0; })[0] || partes[0] || '';
+    return p.replace(/\s*&\s*/g, ' e ');
+  }
+  function oi(nome) { var n = nomeCurto(nome); return 'Oi' + (n ? ', ' + n : '') + '!'; }
+  function mensagemProposta(p) { return oi(p.dados && p.dados.cliente) + ' Aqui está a proposta que preparei: ' + linkDe(p); }
+  function mensagemRetorno(p) { return oi(p.dados && p.dados.cliente) + ' Tudo bem? Deu para ver a proposta? Qualquer dúvida, estou por aqui.'; }
+  function mensagemContato(c) { var p = propostaDoContato(c); return p ? mensagemRetorno(p) : oi(c.nome) + ' Tudo bem? ' + CONFIG.ASSINATURA_WHATS; }
+  function statusContato(c) {
+    var p = propostaDoContato(c); if (!p) return 'Sem proposta';
+    var et = etapaDe(p);
+    if (et === 'fechada') return 'Fechou · ' + dinheiro(valorFechado(p));
+    if (et === 'perdida') return 'Não fechou' + (p.fechamento && p.fechamento.motivo ? ' · ' + p.fechamento.motivo : '');
+    return p.views ? 'Proposta aberta ' + p.views + (p.views === 1 ? ' vez' : ' vezes') : 'Proposta ainda não aberta';
+  }
+  function opcoesLembrete(c, hoje) {
+    var atras = c.lembrete_em < hoje;
+    return { texto: (c.lembrete_txt || 'Chamar de volta') + (atras ? ' · era para ' + dataCurta(c.lembrete_em) : ''), cls: atras ? 'atraso' : '', acoes: (c.whatsapp ? ['whats'] : []).concat(['feito']) };
+  }
+  function linhaContato(c, o) {
+    var r = el('article', 'lembrete contato');
+    var q = botao('q'); q.title = 'Abrir o contato'; q.onclick = function () { abrirContato(c); };
+    q.appendChild(el('b', null, c.nome || 'Sem nome'));
+    if (o.texto) q.appendChild(el('span', o.cls || null, o.texto));
+    var sub = [c.whatsapp && mascaraWhats(c.whatsapp), nomeOrigem(c.origem), c.data_evento && 'evento ' + dataCurta(c.data_evento)].filter(Boolean).join(' · ');
+    if (sub) q.appendChild(el('span', null, sub));
+    r.appendChild(q);
+    var lado = el('div', 'lado');
+    (o.acoes || []).forEach(function (a) {
+      if (a === 'whats') { var w = el('a', 'b b-pq b-ouro', 'WhatsApp'); whatsLink(w, c.whatsapp, mensagemContato(c), c.nome); lado.appendChild(w); }
+      if (a === 'feito') { var f = botao('b b-pq', 'Feito'); f.onclick = function () { lembreteFeito(c, f); }; lado.appendChild(f); }
+      if (a === 'proposta') { var pb = botao('b b-pq b-verde', 'Fazer proposta'); pb.onclick = function () { novaPropostaDeContato(c); }; lado.appendChild(pb); }
+    });
+    if (lado.childNodes.length) r.appendChild(lado); else r.classList.add('sem-lado');
+    return r;
+  }
+  function desenharContatos() {
+    var box = $('contatos'), hoje = hojeISO(), antes = box.querySelector('details.passados'), aberto = !!(antes && antes.open);   // redesenhar não fecha "Todos os contatos"
+    limparNo(box);
+    var chamar = contatos.filter(function (c) { return c.lembrete_em && c.lembrete_em <= hoje; }).sort(function (a, b) { return a.lembrete_em.localeCompare(b.lembrete_em); });
+    var semProp = contatos.filter(function (c) { return !propostaDoContato(c); });
+    var futuros = contatos.filter(function (c) { return c.lembrete_em && c.lembrete_em > hoje; }).sort(function (a, b) { return a.lembrete_em.localeCompare(b.lembrete_em); });
+    var fecharam = contatos.filter(function (c) { var p = propostaDoContato(c); return p && etapaDe(p) === 'fechada'; });
+    $('ctChamar').textContent = chamar.length; $('ctSemProposta').textContent = semProp.length; $('ctFecharam').textContent = fecharam.length;
+    if (!contatos.length) {
+      var v = el('div', 'vazio'); v.appendChild(el('b', null, 'Nenhum contato ainda'));
+      v.appendChild(el('span', null, 'Anote aqui quem pediu preço: nome, WhatsApp e de onde veio. Daí sai a proposta e o lembrete de chamar de volta.'));
+      box.appendChild(v); return;
+    }
+    function lista(l, f) { var g = el('div', 'pagtos'); l.forEach(function (c) { g.appendChild(f(c)); }); return g; }
+    if (chamar.length) { box.appendChild(secao('Chamar hoje', chamar.length)); box.appendChild(lista(chamar, function (c) { return linhaContato(c, opcoesLembrete(c, hoje)); })); }
+    if (semProp.length) { box.appendChild(secao('Sem proposta ainda', semProp.length)); box.appendChild(lista(semProp, function (c) { return linhaContato(c, { texto: 'Pediu preço em ' + dataCurta(diaLocal(c.criado_em)), acoes: ['proposta'] }); })); }
+    if (futuros.length) { box.appendChild(secao('Próximos lembretes', futuros.length)); box.appendChild(lista(futuros, function (c) { return linhaContato(c, { texto: (c.lembrete_txt || 'Chamar de volta') + ' · ' + dataCurta(c.lembrete_em), acoes: [] }); })); }
+    var det = el('details', 'passados'), sum = el('summary'); det.open = aberto;
+    sum.appendChild(el('span', null, 'Todos os contatos')); sum.appendChild(el('small', null, contatos.length + (contatos.length === 1 ? ' contato' : ' contatos')));
+    det.appendChild(sum); det.appendChild(lista(contatos, function (c) { return linhaContato(c, { texto: statusContato(c), acoes: [] }); })); box.appendChild(det);
+    // de onde vêm os pedidos e quantos viraram cliente
+    var por = {};
+    contatos.forEach(function (c) { var o = por[c.origem || ''] = por[c.origem || ''] || { n: 0, f: 0 }; o.n++; var p = propostaDoContato(c); if (p && etapaDe(p) === 'fechada') o.f++; });
+    var ks = Object.keys(por).sort(function (a, b) { return por[b].n - por[a].n || por[b].f - por[a].f; });
+    var max = Math.max.apply(null, ks.map(function (k) { return por[k].n; })) || 1;
+    box.appendChild(secao('De onde vêm', 'quantos pediram preço e quantos fecharam'));
+    var g = el('div', 'mes-a-mes');
+    ks.forEach(function (k) {
+      var x = por[k], row = el('div', 'linha-mes fixa larga');
+      row.appendChild(el('span', 'm', nomeOrigem(k) || 'Não anotado'));
+      var tr = el('span', 'trilho'), b = el('i'); b.style.width = Math.max(3, Math.round(x.n / max * 100)) + '%'; tr.appendChild(b); row.appendChild(tr);
+      var vv = el('span', 'v', x.n + (x.n === 1 ? ' contato' : ' contatos')); vv.appendChild(el('small', null, x.f + (x.f === 1 ? ' fechou' : ' fecharam') + ' (' + Math.round(x.f / x.n * 100) + '%)')); row.appendChild(vv);
+      g.appendChild(row);
+    });
+    box.appendChild(g);
+  }
+  // relatório "Por que não fechou" (no filtro "Não fechou" de Propostas)
+  function desenharMotivos(box) {
+    var perd = propostas.filter(function (p) { return etapaDe(p) === 'perdida'; });
+    if (!perd.length) return;
+    var por = {};
+    perd.forEach(function (p) { var m = ((p.fechamento && p.fechamento.motivo) || '').trim() || 'Sem motivo anotado'; por[m] = (por[m] || 0) + 1; });
+    var ks = Object.keys(por).sort(function (a, b) { return por[b] - por[a] || a.localeCompare(b); }), max = por[ks[0]];
+    var rel = el('div', 'motivos-rel'), g = el('div', 'mes-a-mes');
+    rel.appendChild(secao('Por que não fechou', perd.length + (perd.length === 1 ? ' proposta' : ' propostas')));
+    ks.forEach(function (k) {
+      var row = el('div', 'linha-mes fixa larga');
+      row.appendChild(el('span', 'm', k));
+      var tr = el('span', 'trilho'), b = el('i'); b.style.width = Math.max(3, Math.round(por[k] / max * 100)) + '%'; tr.appendChild(b); row.appendChild(tr);
+      row.appendChild(el('span', 'v', por[k] + ' (' + Math.round(por[k] / perd.length * 100) + '%)'));
+      g.appendChild(row);
+    });
+    rel.appendChild(g); box.appendChild(rel);
+  }
+  // folha do contato
+  ORIGENS.forEach(function (o) {
+    var b = botao(null, o[1]); b.setAttribute('data-v', o[0]); b.setAttribute('aria-pressed', 'false');
+    b.onclick = function () { ctOrigem = ctOrigem === o[0] ? '' : o[0]; pintarOrigem(); };
+    $('ctOrigens').appendChild(b);
+  });
+  function pintarOrigem() { $('ctOrigens').querySelectorAll('button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-v') === ctOrigem)); }); }
+  [['Hoje', 0], ['Amanhã', 1], ['Em 3 dias', 3], ['Em 1 semana', 7], ['Sem lembrete', null]].forEach(function (a) {
+    var b = botao(null, a[0]);
+    b.onclick = function () {
+      $('ctLembEm').value = a[1] == null ? '' : hojeMais(a[1]);
+      if (a[1] == null) $('ctLembTxt').value = '';
+      else if (!$('ctLembTxt').value.trim()) $('ctLembTxt').value = ctPropostaId ? 'Perguntar se viu a proposta' : 'Mandar a proposta';
+    };
+    $('ctAtalhos').appendChild(b);
+  });
+  function abrirContato(c, novo) {
+    contatoEd = c || null; var x = c || novo || {};
+    $('ctTit').textContent = c ? 'Contato' : 'Novo contato';
+    $('ctNome').value = x.nome || ''; $('ctWhats').value = mascaraWhats(x.whatsapp || '');
+    ctOrigem = x.origem || ''; pintarOrigem(); ctPropostaId = x.proposta_id || null;
+    $('ctData').value = x.data_evento || ''; $('ctLembEm').value = x.lembrete_em || ''; $('ctLembTxt').value = x.lembrete_txt || ''; $('ctObs').value = x.obs || '';
+    $('ctErro').hidden = true; $('ctNome').classList.remove('falta'); $('ctWhats').classList.remove('falta');
+    $('ctExcluir').hidden = !c; $('ctAcoes').hidden = !c;
+    if (c) { whatsLink($('ctWhatsBt'), c.whatsapp, mensagemContato(c), c.nome); $('ctProposta').textContent = propostaDoContato(c) ? 'Abrir a proposta' : 'Fazer proposta'; }
+    abrirFolha('folhaContato');
+  }
+  $('btNovoContato').addEventListener('click', function () { abrirContato(null); });
+  $('ctSalvar').addEventListener('click', function () {
+    var corpo = { nome: $('ctNome').value.trim(), whatsapp: $('ctWhats').value, origem: ctOrigem, data_evento: $('ctData').value, lembrete_em: $('ctLembEm').value,
+      lembrete_txt: $('ctLembTxt').value.trim(), obs: $('ctObs').value.trim(), proposta_id: ctPropostaId };
+    if (!corpo.nome) { $('ctNome').classList.add('falta'); $('ctNome').focus(); return erroNaFolha('ctErro', 'Coloque o nome.'); }
+    var dig = corpo.whatsapp.replace(/\D/g, '').replace(/^55(?=\d{10,11}$)/, '');
+    if (dig && dig.length !== 10 && dig.length !== 11) { $('ctWhats').classList.add('falta'); $('ctWhats').focus(); return erroNaFolha('ctErro', 'Coloque o WhatsApp com DDD, por exemplo (11) 99999-0000.'); }
+    var bt = this, solta = ocupado(bt, 'Salvando…'), novo = !contatoEd;
+    api(novo ? 'POST' : 'PUT', '/admin/contatos' + (novo ? '' : '/' + contatoEd.id), corpo).then(function (c) {
+      solta(); atualizarContato(c); fecharFolhas(); desenharTudo();
+      if (!$('vEditor').hidden) pintarSituacao();
+      toast(novo ? 'Contato salvo' : 'Contato atualizado');
+    }, function (e) { solta(); if (e && e.message === '401') return; erroNaFolha('ctErro', e.message || 'Algo deu errado.'); });
+  });
+  $('ctNome').addEventListener('input', function () { this.classList.remove('falta'); $('ctErro').hidden = true; });
+  $('ctWhats').addEventListener('input', function () { this.classList.remove('falta'); $('ctErro').hidden = true; });
+  $('ctExcluir').addEventListener('click', function () {
+    if (!contatoEd || !confirm('Excluir este contato?\n\nO nome, o WhatsApp e as anotações somem. A proposta (se tiver) continua.')) return;
+    var c = contatoEd, solta = ocupado(this, 'Excluindo…');
+    api('DELETE', '/admin/contatos/' + c.id).then(function () {
+      solta(); contatos = contatos.filter(function (x) { return x.id !== c.id; }); fecharFolhas(); desenharTudo();
+      if (!$('vEditor').hidden) pintarSituacao();
+      toast('Contato excluído');
+    }, function (e) { solta(); falhou(e); });
+  });
+  $('ctProposta').addEventListener('click', function () {
+    if (!contatoEd) return;
+    var p = propostaDoContato(contatoEd);
+    if (p) { fecharFolhas(); abrirEditor(p); } else novaPropostaDeContato(contatoEd);
+  });
+  function lembreteFeito(c, bt) {
+    var solta = ocupado(bt);
+    api('PUT', '/admin/contatos/' + c.id, Object.assign({}, c, { lembrete_em: '', lembrete_txt: '' })).then(function (nc) {
+      atualizarContato(nc); desenharTudo(); toast('Lembrete feito');
+    }, function (e) { solta(); falhou(e); });
+  }
+  // "Fazer proposta" a partir do contato: a proposta nasce com o nome e a data dele e fica ligada ao contato
+  function novaPropostaDeContato(c) {
+    fecharFolhas();
+    carregarModelo().then(function (m) {
+      editando = { novo: true }; sujo = false; vincularContato = c.id;
+      var d = JSON.parse(JSON.stringify(m)); d.cliente = c.nome || ''; d.data = c.data_evento || ''; d.local = ''; d.mensagem = '';
+      d.validade = hojeMais(Number(m.validade_dias) || 30);
+      preencher(d);
+      entrarEditor('Nova proposta', 'Salvar e gerar link', 'proposta', false);
+    }).catch(falhou);
+  }
 
   // ---------- agenda: o seu mês ----------
   function mesAtual() { var h = new Date(); return { y: h.getFullYear(), m: h.getMonth() }; }
@@ -1597,6 +1926,7 @@
   function desenharLista() {
     var box = $('lista'), visiveis = propostas.filter(noFiltro);
     limparNo(box);
+    if (filtro === 'perdidas') desenharMotivos(box);
     if (!visiveis.length) {
       var tv = VAZIO[propostas.length ? filtro : 'nada'] || VAZIO.nada, v = el('div', 'vazio');
       v.appendChild(el('b', null, tv[0])); v.appendChild(el('span', null, tv[1]));
@@ -1911,6 +2241,9 @@
     $('btEditarFech').hidden = et !== 'fechada';
     if (!existe) return;
     $('edVer').href = linkDe(p);
+    var ce = contatoDe(p);
+    whatsLink($('edWhats'), ce && ce.whatsapp, mensagemProposta(p), ce ? ce.nome : (p.dados && p.dados.cliente));
+    $('edContato').textContent = ce ? 'Contato: ' + ce.nome + (ce.whatsapp ? ' · ' + mascaraWhats(ce.whatsapp) : '') + ' · editar' : '+ Guardar o WhatsApp do cliente';
     if (et === 'fechada') {
       $('edSituacao').className = 'situacao fechada';
       $('sitTitulo').textContent = 'Fechada · ' + dinheiro(valorFechado(p));
@@ -1951,7 +2284,7 @@
   function novaProposta() {
     var solta = ocupado($('btNova'));
     carregarModelo().then(function (m) {
-      editando = { novo: true }; sujo = false;
+      editando = { novo: true }; sujo = false; vincularContato = null;
       var d = JSON.parse(JSON.stringify(m)); d.cliente = ''; d.data = ''; d.local = ''; d.mensagem = '';
       d.validade = hojeMais(Number(m.validade_dias) || 30);
       preencher(d);
@@ -1962,7 +2295,7 @@
   $('btNovaAgenda').addEventListener('click', novaProposta);
 
   function abrirEditor(p) {
-    editando = p; sujo = false;
+    editando = p; sujo = false; vincularContato = null;
     preencher(p.dados);
     entrarEditor((p.dados && p.dados.cliente) || 'Proposta', 'Salvar alterações', 'proposta', false);
   }
@@ -2009,6 +2342,13 @@
       editando = np; sujo = false; if (eraNova) np._nova = true; atualizarNaLista(np);
       $('edTitulo').textContent = (np.dados && np.dados.cliente) || 'Proposta'; bt.textContent = 'Salvar alterações';
       modo('proposta');
+      if (eraNova && vincularContato) {   // a proposta feita a partir de um contato fica ligada a ele
+        var cv = contatos.filter(function (x) { return x.id === vincularContato; })[0]; vincularContato = null;
+        if (cv) {
+          cv.proposta_id = np.id; pintarSituacao();
+          api('PUT', '/admin/contatos/' + cv.id, cv).then(function (nc) { atualizarContato(nc); desenharTudo(); }).catch(falhou);
+        }
+      }
       if (eraNova) abrirPronta(np); else toast('Alterações salvas — o link continua o mesmo');
     }, function (e) { solta(); falhou(e); });
   }
@@ -2052,7 +2392,7 @@
   $('btModeloCartao').addEventListener('click', abrirModelo);
 
   // ---------- folhas ----------
-  var FOLHAS = ['folhaGuia', 'folhaPronta', 'folhaFechou', 'folhaRecebi'];
+  var FOLHAS = ['folhaGuia', 'folhaPronta', 'folhaFechou', 'folhaRecebi', 'folhaContato', 'folhaWhats'];
   var focoAntes = null;
   function abrirFolha(id) {
     focoAntes = document.activeElement;
@@ -2074,6 +2414,8 @@
 
   function abrirPronta(p) {
     $('prontaLink').textContent = linkDe(p); $('prontaVer').href = linkDe(p);
+    var ce = contatoDe(p);
+    whatsLink($('prontaWhats'), ce && ce.whatsapp, mensagemProposta(p), ce ? ce.nome : (p.dados && p.dados.cliente));
     abrirFolha('folhaPronta');
   }
   $('prontaVoltar').addEventListener('click', function () { fecharFolhas(); sairDoEditor(); });
@@ -2227,6 +2569,11 @@
   $('fxValor').addEventListener('blur', function () { var x = parseValor(this.value); this.value = x != null ? numero(x) : ''; });
   $('fxValor').addEventListener('input', function () { $('fxValorCaixa').classList.remove('falta'); $('fxErro').hidden = true; });
   $('edFechou').addEventListener('click', function () { if (editando && editando.id) abrirFechou(editando); });
+  $('edContato').addEventListener('click', function () {
+    if (!editando || !editando.id) return;
+    var ce = contatoDe(editando), d = editando.dados || {};
+    abrirContato(ce, ce ? null : { nome: d.cliente || '', data_evento: d.data || '', proposta_id: editando.id });
+  });
   $('btEditarFech').addEventListener('click', function () { if (editando && editando.id) abrirFechou(editando); });
   MOTIVOS.forEach(function (m) { var b = botao(null, m); b.onclick = function () { $('nfMotivo').value = m; }; $('nfMotivos').appendChild(b); });
   $('fxNao').addEventListener('click', function () { $('fxParteFechou').hidden = true; $('fxParteNao').hidden = false; });
